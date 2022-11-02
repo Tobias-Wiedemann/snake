@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class SimpleBoard extends Board {
     public SimpleBoard() {
-        super(24, 20, 25, new Color(232, 232, 232));
+        super(24, 20, 200, new Color(232, 232, 232));
     }
 
 /*

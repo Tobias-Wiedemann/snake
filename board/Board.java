@@ -21,29 +21,22 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     protected Timer timer;
     protected Player player;
     private boolean gameOver;
-    private fieldType[][] board;
-    final private ArrayList<Point> apples;
-    private Random random;
+    private final ArrayList<Point> apples;
+    private final Random random;
     public Board(final int rows, final int columns, final int delay, Color color) {
         ROWS = rows;
         COLUMNS = columns;
         DELAY = delay;
         gameOver = false;
-        board = new fieldType[ROWS][COLUMNS];
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLUMNS; j++) {
-                board[i][j] = fieldType.EMPTY;
-            }
-        }
         apples = new ArrayList<Point>();
         random = new Random(SEED);
         setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * ROWS));
         // set the game board background color
         setBackground(color);
-        createApple();
 
         // initialize the game state
         player = new Player(COLUMNS / 2, ROWS / 2, this);
+        createApple();
 
         // this timer will call the actionPerformed() method every DELAY ms
         timer = new Timer(DELAY, this);
@@ -59,9 +52,6 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         if (!gameOver) {
             player.move();
         }
-
-        // give the player points for collecting coins
-        this.eatApple();
 
         // calling repaint() will trigger paintComponent() to run again,
         // which will refresh/redraw the graphics.
@@ -113,33 +103,49 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     }
 
     public void createApple() {
-        int x = random.nextInt(ROWS);
-        int y = random.nextInt(COLUMNS);
-        while (board[x][y] != fieldType.EMPTY) {
+        int x;
+        int y;
+        while(true) {
             x = random.nextInt(ROWS);
             y = random.nextInt(COLUMNS);
-            if (board[x][y] == fieldType.EMPTY) {
-                apples.add(new Point(x, y));
-                return;
+            boolean validSpotFlag = false;
+            for (Point p : player.getBody()) {
+                if (p.x == x && p.y == y) {
+                    x = random.nextInt(ROWS);
+                    y = random.nextInt(COLUMNS);
+                    validSpotFlag = true;
+                    break;
+                }
+            }
+            if (validSpotFlag) {
+                break;
             }
         }
-        apples.add(new Point(x * TILE_SIZE, y * TILE_SIZE));
+        // Relative coordinates, 0 <= x < rows, 0 <= y < columns
+        apples.add(new Point(x, y));
     }
 
     public void drawApples(Graphics g) {
         g.setColor(new Color(255, 0, 0));
         for (Point p : apples) {
-            g.fillRect(p.x, p.y, TILE_SIZE, TILE_SIZE);
+            g.fillRect(p.x * TILE_SIZE, p.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
-    }
-
-    public void eatApple() {
-
     }
 
     public void endGame() {
         gameOver = true;
     }
 
+    public java.util.List<Point> getApples() {
+        return apples;
+    }
 
+    public void eatApple(Point p) {
+        java.util.List<Point> appleCopy = apples.stream().toList();
+        for (Point t : appleCopy) {
+            if (t.equals(p)) {
+                apples.remove(t);
+            }
+        }
+    }
 }
