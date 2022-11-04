@@ -21,7 +21,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     protected Timer timer;
     protected Player player;
     private boolean gameOver;
-    private final ArrayList<Point> apples;
+    protected final ArrayList<Point> apples;
     private final Random random;
     public Board(final int rows, final int columns, final int delay, Color color) {
         ROWS = rows;
@@ -99,6 +99,40 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     }
 
     public void drawScore(Graphics g) {
+        // set the text to be displayed
+        String text;
+        if (player.getScore().equals("1")) {
+            text = player.getScore() + " Apple";
+        } else {
+            text = player.getScore() + " Apples";
+        }
+        // we need to cast the Graphics to Graphics2D to draw nicer text
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        // set the text color and font
+        g2d.setColor(new Color(30, 201, 139));
+        g2d.setFont(new Font("Lato", Font.BOLD, 25));
+        // draw the score in the bottom center of the screen
+        // https://stackoverflow.com/a/27740330/4655368
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        // the text will be contained within this rectangle.
+        // here I've sized it to be the entire bottom row of board tiles
+        Rectangle rect = new Rectangle(0, TILE_SIZE * (ROWS - 1), TILE_SIZE * COLUMNS, TILE_SIZE);
+        // determine the x coordinate for the text
+        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
+        // determine the y coordinate for the text
+        // (note we add the ascent, as in java 2d 0 is top of the screen)
+        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
+        // draw the string
+        g2d.drawString(text, x, y);
 
     }
 
@@ -146,6 +180,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         for (Point t : appleCopy) {
             if (t.equals(p)) {
                 apples.remove(t);
+                player.addScore(1);
             }
         }
     }

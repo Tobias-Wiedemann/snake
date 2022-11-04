@@ -1,4 +1,5 @@
 import board.Board;
+import board.BoardWithGraphics;
 import board.SimpleBoard;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ public class main {
 
         // create the jpanel to draw on.
         // this also initializes the game loop
-        Board board = new SimpleBoard();
+        Board board = new BoardWithGraphics();
         // add the jpanel to the window
         window.add(board);
         // pass keyboard inputs to the jpanel

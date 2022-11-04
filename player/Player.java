@@ -18,8 +18,8 @@ public class Player {
 
     private int score;
     private Point pos;
-    private Board board;
-    private Queue<Point> body;
+    private final Board board;
+    private final Queue<Point> body;
     private Direction head;
     private Direction neck;
 
