@@ -2,9 +2,14 @@ package player;
 
 import board.Board;
 import board.fieldType;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +27,7 @@ public class Player {
     private final Queue<Point> body;
     private Direction head;
     private Direction neck;
+    private BufferedImage image;
 
     public Player(final int xStart, final int yStart, final Board board) {
         // initialize the state
@@ -31,6 +37,16 @@ public class Player {
         body.offer(pos);
         head = Direction.RIGHT;
         this.board = board;
+    }
+
+    private void loadImage() {
+        try {
+            // you can use just the filename if the image file is in your
+            // project folder, otherwise you need to provide the file path.
+            image = ImageIO.read(new File("images/snake_apple.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
     }
 
     public void move() {
@@ -43,11 +59,10 @@ public class Player {
         switch (neck) {
             case UP -> {
                 if (pos.y <= 0) {
-                    pos = new Point(pos.x, ROWS);
+                    pos = new Point(pos.x, ROWS - 1);
                 } else {
                     pos = new Point(pos.x, pos.y - 1);
                 }
-                body.offer(pos);
             }
             case DOWN -> {
                 if (pos.y + 1 >= ROWS) {
@@ -55,7 +70,6 @@ public class Player {
                 } else {
                     pos = new Point(pos.x, pos.y + 1);
                 }
-                body.offer(pos);
             }
             case RIGHT -> {
                 if (pos.x + 1 >= COLUMNS) {
@@ -63,7 +77,6 @@ public class Player {
                 } else {
                     pos = new Point(pos.x + 1, pos.y);
                 }
-                body.offer(pos);
             }
             case LEFT -> {
                 if (pos.x <= 0) {
@@ -71,10 +84,10 @@ public class Player {
                 } else {
                     pos = new Point(pos.x - 1, pos.y);
                 }
-                body.offer(pos);
             }
             default -> throw new IllegalArgumentException("Snake does not face any direction :(");
         }
+        body.offer(pos);
         // Move the snake up and manage apples
         moveOnTo();
     }
@@ -160,7 +173,16 @@ public class Player {
         // position by multiplying by the tile size.
         g.setColor(new Color(0, 255, 0));
         for (Point p : body) {
-            g.fillRect(p.x * Board.TILE_SIZE, p.y * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);
+            if (p.equals(pos)) {
+                g.drawImage(
+                        image,
+                        p.x * Board.TILE_SIZE,
+                        p.y * Board.TILE_SIZE,
+                        board
+                );
+            } else {
+                g.fillRect(p.x * Board.TILE_SIZE, p.y * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);
+            }
         }
 
 

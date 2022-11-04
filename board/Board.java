@@ -13,8 +13,7 @@ import java.util.Random;
 
 public abstract class Board extends JPanel implements ActionListener, KeyListener {
 
-    public static final int SEED = 42;
-    protected int DELAY;
+    public static final int SEED = 43;
     public static final int TILE_SIZE = 25;
     public static int ROWS;
     public static int COLUMNS;
@@ -23,13 +22,14 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     private boolean gameOver;
     protected final ArrayList<Point> apples;
     private final Random random;
-    public Board(final int rows, final int columns, final int delay, Color color) {
+    protected final String difficulty;
+    public Board(final int rows, final int columns, Color color, String difficulty) {
         ROWS = rows;
         COLUMNS = columns;
-        DELAY = delay;
         gameOver = false;
         apples = new ArrayList<Point>();
         random = new Random(SEED);
+        this.difficulty = difficulty;
         setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * ROWS));
         // set the game board background color
         setBackground(color);
@@ -39,7 +39,15 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         createApple();
 
         // this timer will call the actionPerformed() method every DELAY ms
-        timer = new Timer(DELAY, this);
+        switch (Difficulty.valueOf(difficulty)) {
+            case EASY -> timer = new Timer(400, this);
+            case MEDIUM -> timer = new Timer(200, this);
+            case HARD -> timer = new Timer(150, this);
+            case EXTREME -> timer = new Timer(100, this);
+            case GIGAEXTREME -> timer = new Timer(75, this);
+            case HYPAEXTREME -> timer = new Timer(50, this);
+            default -> throw new IllegalArgumentException("Invalid difficulty setting");
+        }
         timer.start();
 
     }

@@ -14,7 +14,7 @@ public class main {
 
         // create the jpanel to draw on.
         // this also initializes the game loop
-        Board board = new BoardWithGraphics();
+        Board board = new BoardWithGraphics("HARD");
         // add the jpanel to the window
         window.add(board);
         // pass keyboard inputs to the jpanel

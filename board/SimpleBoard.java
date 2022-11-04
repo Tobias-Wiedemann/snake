@@ -3,8 +3,8 @@ package board;
 import java.awt.*;
 
 public class SimpleBoard extends Board {
-    public SimpleBoard() {
-        super(14, 10, 200, new Color(232, 232, 232));
+    public SimpleBoard(String difficulty) {
+        super(14, 10, new Color(232, 232, 232), difficulty);
     }
 
 /*

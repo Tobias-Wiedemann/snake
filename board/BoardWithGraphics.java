@@ -9,8 +9,8 @@ import java.io.IOException;
 public class BoardWithGraphics extends Board {
 
     private BufferedImage image;
-    public BoardWithGraphics() {
-        super(14, 10, 200, new Color(232, 232, 232));
+    public BoardWithGraphics(String difficulty) {
+        super(14, 10, new Color(232, 232, 232), difficulty);
         loadImage();
     }
 
