@@ -106,18 +106,19 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         int x;
         int y;
         while(true) {
-            x = random.nextInt(ROWS);
-            y = random.nextInt(COLUMNS);
-            boolean validSpotFlag = false;
+            x = random.nextInt(COLUMNS - 1);
+            y = random.nextInt(ROWS - 1);
+            // if this stays false then its valid
+            boolean invalidSpotFlag = false;
             for (Point p : player.getBody()) {
                 if (p.x == x && p.y == y) {
-                    x = random.nextInt(ROWS);
-                    y = random.nextInt(COLUMNS);
-                    validSpotFlag = true;
+                    x = random.nextInt(COLUMNS - 1);
+                    y = random.nextInt(ROWS - 1);
+                    invalidSpotFlag = true;
                     break;
                 }
             }
-            if (validSpotFlag) {
+            if (!invalidSpotFlag) {
                 break;
             }
         }
@@ -148,4 +149,5 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
             }
         }
     }
+
 }

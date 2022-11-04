@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import static board.Board.COLUMNS;
+import static board.Board.ROWS;
+
 public class Player {
 
     private int score;
@@ -31,19 +34,45 @@ public class Player {
     }
 
     public void move() {
-        if (!validateMove()) {
-            board.endGame();
-        }
+        validateMove();
 
         // Move the neck up
         neck = head;
         // Move the head up
-        assert(!body.isEmpty());
+        // Move the stuff through the walls
         switch (neck) {
-            case UP -> body.offer(new Point(body.peek().x, body.peek().y - 1));
-            case DOWN -> body.offer(new Point(body.peek().x, body.peek().y + 1));
-            case RIGHT -> body.offer(new Point(body.peek().x + 1, body.peek().y));
-            case LEFT -> body.offer(new Point(body.peek().x - 1, body.peek().y));
+            case UP -> {
+                if (pos.y <= 0) {
+                    pos = new Point(pos.x, ROWS);
+                } else {
+                    pos = new Point(pos.x, pos.y - 1);
+                }
+                body.offer(pos);
+            }
+            case DOWN -> {
+                if (pos.y + 1 >= ROWS) {
+                    pos = new Point(pos.x, 0);
+                } else {
+                    pos = new Point(pos.x, pos.y + 1);
+                }
+                body.offer(pos);
+            }
+            case RIGHT -> {
+                if (pos.x + 1 >= COLUMNS) {
+                    pos = new Point(0, pos.y);
+                } else {
+                    pos = new Point(pos.x + 1, pos.y);
+                }
+                body.offer(pos);
+            }
+            case LEFT -> {
+                if (pos.x <= 0) {
+                    pos = new Point(COLUMNS - 1, pos.y);
+                } else {
+                    pos = new Point(pos.x - 1, pos.y);
+                }
+                body.offer(pos);
+            }
             default -> throw new IllegalArgumentException("Snake does not face any direction :(");
         }
         // Move the snake up and manage apples
@@ -55,8 +84,8 @@ public class Player {
         List<Point> appleListCopy = board.getApples().stream().toList();
         for (Point p : appleListCopy) {
             assert(!body.isEmpty());
-            if (body.peek().x == p.x && body.peek().y == p.y) {
-                board.eatApple(new Point(body.peek().x, body.peek().y));
+            if (pos.x == p.x && pos.y == p.y) {
+                board.eatApple(new Point(pos.x, pos.y));
                 appleEaten = true;
                 board.createApple();
             }
@@ -66,25 +95,53 @@ public class Player {
         }
     }
 
-    public boolean validateMove() {
+    public void validateMove() {
         // this gets called once every tick, before the repainting process happens.
         // so we can do anything needed in here to update the state of the player.
 
-        // prevent the player from moving off the edge of the board sideways
-        assert(!body.isEmpty());
-        if (body.peek().x < 0) {
-            body.peek().x = 0;
-        } else if (body.peek().x >= Board.COLUMNS) {
-            body.peek().x = Board.COLUMNS - 1;
-        }
-        // prevent the player from moving off the edge of the board vertically
-        if (body.peek().y < 0) {
-            body.peek().y = 0;
-        } else if (body.peek().y >= Board.ROWS) {
-            body.peek().y = Board.ROWS - 1;
+        // next field to be moved on
+        Point nextPos;
+        switch (head) {
+            case UP -> {
+                nextPos = new Point(pos.x, pos.y - 1);
+            }
+            case DOWN -> {
+                nextPos = new Point(pos.x, pos.y + 1);
+            }
+            case RIGHT -> {
+                nextPos = new Point(pos.x + 1, pos.y);
+            }
+            case LEFT -> {
+                nextPos = new Point(pos.x - 1, pos.y);
+            }
+            default -> throw new IllegalArgumentException("snake is directionless");
         }
 
-        return true;
+
+/*
+        // prevent the player from moving off the edge of the board sideways
+        if (nextPos.x < 0) {
+            // nextPos..x = 0;
+            board.endGame();
+        } else if (nextPos.x >= COLUMNS) {
+            // nextPos..x = Board.COLUMNS - 1;
+            board.endGame();
+        }
+        // prevent the player from moving off the edge of the board vertically
+        if (nextPos.y < 0) {
+            // nextPos..y = 0;
+            board.endGame();
+        } else if (nextPos.y >= ROWS) {
+            // nextPos..y = Board.ROWS - 1;
+            board.endGame();
+        }
+ */
+
+        // prevent biting yourself
+        if (body.contains(nextPos)) {
+            board.endGame();
+        }
+
     }
 
 
@@ -94,10 +151,6 @@ public class Player {
 
     public void addScore(int amount) {
         score += amount;
-    }
-
-    public Point getPos() {
-        return pos;
     }
 
     public void draw(Graphics g, ImageObserver observer) {
