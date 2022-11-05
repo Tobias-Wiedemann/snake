@@ -156,7 +156,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
             // if this stays false then its valid
             boolean invalidSpotFlag = false;
             for (DirectionPoint p : player.getBody()) {
-                if (p.point().x == x && p.point().y == y) {
+                if (p.getPoint().x == x && p.getPoint().y == y) {
                     x = random.nextInt(COLUMNS - 1);
                     y = random.nextInt(ROWS - 1);
                     invalidSpotFlag = true;

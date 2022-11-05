@@ -27,11 +27,13 @@ public class Player {
     protected final Queue<DirectionPoint> body;
     protected Direction head;
     protected Direction neck;
+    protected DirectionPoint neckPiece;
 
     public Player(final int xStart, final int yStart, final Board board) {
         // initialize the state
         head = Direction.RIGHT;
         pos = new DirectionPoint(new Point(xStart, yStart), head);
+        neckPiece = pos;
         score = 0;
         body = new LinkedList<DirectionPoint>();
         body.offer(pos);
@@ -43,39 +45,41 @@ public class Player {
 
         // Move the neck up
         neck = head;
+        neckPiece.setDirection(head);
         // Move the head up
         // Move the stuff through the walls
         switch (neck) {
             case UP -> {
-                if (pos.point().y <= 0) {
-                    pos = new DirectionPoint(new Point(pos.point().x, ROWS - 1), head);
+                if (pos.getPoint().y <= 0) {
+                    pos = new DirectionPoint(new Point(pos.getPoint().x, ROWS - 1), head);
                 } else {
-                    pos = new DirectionPoint(new Point(pos.point().x, pos.point().y - 1), head);
+                    pos = new DirectionPoint(new Point(pos.getPoint().x, pos.getPoint().y - 1), head);
                 }
             }
             case DOWN -> {
-                if (pos.point().y + 1 >= ROWS) {
-                    pos = new DirectionPoint(new Point(pos.point().x, 0), head);
+                if (pos.getPoint().y + 1 >= ROWS) {
+                    pos = new DirectionPoint(new Point(pos.getPoint().x, 0), head);
                 } else {
-                    pos = new DirectionPoint(new Point(pos.point().x, pos.point().y + 1), head);
+                    pos = new DirectionPoint(new Point(pos.getPoint().x, pos.getPoint().y + 1), head);
                 }
             }
             case RIGHT -> {
-                if (pos.point().x + 1 >= COLUMNS) {
-                    pos = new DirectionPoint(new Point(0, pos.point().y), head);
+                if (pos.getPoint().x + 1 >= COLUMNS) {
+                    pos = new DirectionPoint(new Point(0, pos.getPoint().y), head);
                 } else {
-                    pos = new DirectionPoint(new Point(pos.point().x + 1, pos.point().y), head);
+                    pos = new DirectionPoint(new Point(pos.getPoint().x + 1, pos.getPoint().y), head);
                 }
             }
             case LEFT -> {
-                if (pos.point().x <= 0) {
-                    pos = new DirectionPoint(new Point(COLUMNS - 1, pos.point().y), head);
+                if (pos.getPoint().x <= 0) {
+                    pos = new DirectionPoint(new Point(COLUMNS - 1, pos.getPoint().y), head);
                 } else {
-                    pos = new DirectionPoint(new Point(pos.point().x - 1, pos.point().y), head);
+                    pos = new DirectionPoint(new Point(pos.getPoint().x - 1, pos.getPoint().y), head);
                 }
             }
             default -> throw new IllegalArgumentException("Snake does not face any direction :(");
         }
+        neckPiece = pos;
         body.offer(pos);
         // Move the snake up and manage apples
         moveOnTo();
@@ -86,8 +90,8 @@ public class Player {
         List<Point> appleListCopy = board.getApples().stream().toList();
         for (Point p : appleListCopy) {
             assert(!body.isEmpty());
-            if (pos.point().x == p.x && pos.point().y == p.y) {
-                board.eatApple(new Point(pos.point().x, pos.point().y));
+            if (pos.getPoint().x == p.x && pos.getPoint().y == p.y) {
+                board.eatApple(new Point(pos.getPoint().x, pos.getPoint().y));
                 appleEaten = true;
                 board.createApple();
             }
@@ -105,16 +109,16 @@ public class Player {
         Point nextPos;
         switch (head) {
             case UP -> {
-                nextPos = new Point(pos.point().x, pos.point().y - 1);
+                nextPos = new Point(pos.getPoint().x, pos.getPoint().y - 1);
             }
             case DOWN -> {
-                nextPos = new Point(pos.point().x, pos.point().y + 1);
+                nextPos = new Point(pos.getPoint().x, pos.getPoint().y + 1);
             }
             case RIGHT -> {
-                nextPos = new Point(pos.point().x + 1, pos.point().y);
+                nextPos = new Point(pos.getPoint().x + 1, pos.getPoint().y);
             }
             case LEFT -> {
-                nextPos = new Point(pos.point().x - 1, pos.point().y);
+                nextPos = new Point(pos.getPoint().x - 1, pos.getPoint().y);
             }
             default -> throw new IllegalArgumentException("snake is directionless");
         }
@@ -140,7 +144,8 @@ public class Player {
  */
 
         // prevent biting yourself
-        if (body.stream().map(DirectionPoint::point).toList().contains(nextPos)) {
+        if (body.stream().map(DirectionPoint::getPoint).toList().contains(nextPos)
+                && nextPos != body.peek().getPoint()) {
             board.endGame();
         }
 
@@ -162,7 +167,7 @@ public class Player {
         // position by multiplying by the tile size.
         g.setColor(new Color(0, 255, 0));
         for (DirectionPoint p : body) {
-            g.fillRect(p.point().x * Board.TILE_SIZE, p.point().y * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);
+            g.fillRect(p.getPoint().x * Board.TILE_SIZE, p.getPoint().y * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);
         }
 
 
@@ -200,7 +205,4 @@ public class Player {
         return body;
     }
 
-    public void endGame() {
-
-    }
 }

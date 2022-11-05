@@ -8,6 +8,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class PlayerWithGraphics extends Player {
 
@@ -155,16 +159,154 @@ public class PlayerWithGraphics extends Player {
         // this is also where we translate board grid position into a canvas pixel
         // position by multiplying by the tile size.
         g.setColor(new Color(0, 255, 0));
+        Direction directionOfTheLastPart = null;
+        // Assuming that iterating over a queue starts at the queue head which is the snake tail
         for (DirectionPoint p : body) {
-            if (p.equals(pos)) {
+            // Snake size == 1 so egg
+            if (p.getPoint().equals(pos.getPoint()) && body.size() == 1) {
                 g.drawImage(
                         snake_egg,
-                        p.point().x * Board.TILE_SIZE,
-                        p.point().y * Board.TILE_SIZE,
+                        p.getPoint().x * Board.TILE_SIZE,
+                        p.getPoint().y * Board.TILE_SIZE,
                         board
                 );
+                continue;
+            } else if (p.getPoint().equals(pos.getPoint())) {
+                // Head
+                switch (p.getDirection()) {
+                    case UP -> {
+                        g.drawImage(
+                                snake_head_up,
+                                p.getPoint().x * Board.TILE_SIZE,
+                                p.getPoint().y * Board.TILE_SIZE,
+                                board);
+                        continue;
+                    }
+                    case DOWN -> {
+                        g.drawImage(
+                                snake_head_down,
+                                p.getPoint().x * Board.TILE_SIZE,
+                                p.getPoint().y * Board.TILE_SIZE,
+                                board);
+                        continue;
+                    }
+                    case RIGHT -> {
+                        g.drawImage(
+                                snake_head_right,
+                                p.getPoint().x * Board.TILE_SIZE,
+                                p.getPoint().y * Board.TILE_SIZE,
+                                board);
+                        continue;
+                    }
+                    case LEFT -> {
+                        g.drawImage(
+                                snake_head_left,
+                                p.getPoint().x * Board.TILE_SIZE,
+                                p.getPoint().y * Board.TILE_SIZE,
+                                board);
+                        continue;
+                    }
+                    default -> throw new IllegalArgumentException("Head is directionless");
+                }
+            }
+            // Tail
+            if (p == body.peek()) {
+                switch (p.getDirection()) {
+                    case UP -> {
+                        g.drawImage(
+                                snake_tail_upwards,
+                                p.getPoint().x * Board.TILE_SIZE,
+                                p.getPoint().y * Board.TILE_SIZE,
+                                board);
+                        directionOfTheLastPart = p.getDirection();
+                        continue;
+                    }
+                    case DOWN -> {
+                        g.drawImage(
+                                snake_tail_downwards,
+                                p.getPoint().x * Board.TILE_SIZE,
+                                p.getPoint().y * Board.TILE_SIZE,
+                                board);
+                        directionOfTheLastPart = p.getDirection();
+                        continue;
+                    }
+                    case RIGHT -> {
+                        g.drawImage(
+                                snake_tail_rightwards,
+                                p.getPoint().x * Board.TILE_SIZE,
+                                p.getPoint().y * Board.TILE_SIZE,
+                                board);
+                        directionOfTheLastPart = p.getDirection();
+                        continue;
+                    }
+                    case LEFT -> {
+                        g.drawImage(
+                                snake_tail_leftwards,
+                                p.getPoint().x * Board.TILE_SIZE,
+                                p.getPoint().y * Board.TILE_SIZE,
+                                board);
+                        directionOfTheLastPart = p.getDirection();
+                        continue;
+                    }
+                    default -> throw new IllegalArgumentException("Tail is directionless");
+                }
+            }
+            // Body parts
+            // Straight parts first, then corners
+            if (p.getDirection() == directionOfTheLastPart) {
+                // Horizontal check
+                if (directionOfTheLastPart == Direction.RIGHT || directionOfTheLastPart == Direction.LEFT) {
+                    g.drawImage(
+                            snake_body_horizontal,
+                            p.getPoint().x * Board.TILE_SIZE,
+                            p.getPoint().y * Board.TILE_SIZE,
+                            board);
+                } else {
+                    // Vertical
+                    g.drawImage(
+                            snake_body_vertical,
+                            p.getPoint().x * Board.TILE_SIZE,
+                            p.getPoint().y * Board.TILE_SIZE,
+                            board);
+                }
+            } else if (p.getDirection() == Direction.UP && directionOfTheLastPart == Direction.LEFT
+                    || p.getDirection() == Direction.RIGHT && directionOfTheLastPart == Direction.DOWN) {
+                // Corner: RIGHT UP
+                g.drawImage(
+                        snake_corner_right_up,
+                        p.getPoint().x * Board.TILE_SIZE,
+                        p.getPoint().y * Board.TILE_SIZE,
+                        board);
+                directionOfTheLastPart = p.getDirection();
+            } else if (p.getDirection() == Direction.UP && directionOfTheLastPart == Direction.RIGHT
+                    || p.getDirection() == Direction.LEFT && directionOfTheLastPart == Direction.DOWN) {
+                // Corner: LEFT UP
+                g.drawImage(
+                        snake_corner_left_up,
+                        p.getPoint().x * Board.TILE_SIZE,
+                        p.getPoint().y * Board.TILE_SIZE,
+                        board);
+                directionOfTheLastPart = p.getDirection();
+            } else if (p.getDirection() == Direction.DOWN && directionOfTheLastPart == Direction.LEFT
+                    || p.getDirection() == Direction.RIGHT && directionOfTheLastPart == Direction.UP) {
+                // Corner: RIGHT DOWN
+                g.drawImage(
+                        snake_corner_right_down,
+                        p.getPoint().x * Board.TILE_SIZE,
+                        p.getPoint().y * Board.TILE_SIZE,
+                        board);
+                directionOfTheLastPart = p.getDirection();
+            } else if (p.getDirection() == Direction.DOWN && directionOfTheLastPart == Direction.RIGHT
+                    || p.getDirection() == Direction.LEFT && directionOfTheLastPart == Direction.UP) {
+                // Corner: LEFT DOWN
+                g.drawImage(
+                        snake_corner_left_down,
+                        p.getPoint().x * Board.TILE_SIZE,
+                        p.getPoint().y * Board.TILE_SIZE,
+                        board);
+                directionOfTheLastPart = p.getDirection();
             } else {
-                g.fillRect(p.point().x * Board.TILE_SIZE, p.point().y * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);
+                throw new IllegalArgumentException("Weird direction combination");
             }
         }
 
