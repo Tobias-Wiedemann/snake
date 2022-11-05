@@ -21,32 +21,21 @@ import static board.Board.ROWS;
 
 public class Player {
 
-    private int score;
-    private Point pos;
-    private final Board board;
-    private final Queue<Point> body;
-    private Direction head;
-    private Direction neck;
-    private BufferedImage image;
+    protected int score;
+    protected DirectionPoint pos;
+    protected final Board board;
+    protected final Queue<DirectionPoint> body;
+    protected Direction head;
+    protected Direction neck;
 
     public Player(final int xStart, final int yStart, final Board board) {
         // initialize the state
-        pos = new Point(xStart, yStart);
-        score = 0;
-        body = new LinkedList<Point>();
-        body.offer(pos);
         head = Direction.RIGHT;
+        pos = new DirectionPoint(new Point(xStart, yStart), head);
+        score = 0;
+        body = new LinkedList<DirectionPoint>();
+        body.offer(pos);
         this.board = board;
-    }
-
-    private void loadImage() {
-        try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
-            image = ImageIO.read(new File("images/snake_apple.png"));
-        } catch (IOException exc) {
-            System.out.println("Error opening image file: " + exc.getMessage());
-        }
     }
 
     public void move() {
@@ -58,31 +47,31 @@ public class Player {
         // Move the stuff through the walls
         switch (neck) {
             case UP -> {
-                if (pos.y <= 0) {
-                    pos = new Point(pos.x, ROWS - 1);
+                if (pos.point().y <= 0) {
+                    pos = new DirectionPoint(new Point(pos.point().x, ROWS - 1), head);
                 } else {
-                    pos = new Point(pos.x, pos.y - 1);
+                    pos = new DirectionPoint(new Point(pos.point().x, pos.point().y - 1), head);
                 }
             }
             case DOWN -> {
-                if (pos.y + 1 >= ROWS) {
-                    pos = new Point(pos.x, 0);
+                if (pos.point().y + 1 >= ROWS) {
+                    pos = new DirectionPoint(new Point(pos.point().x, 0), head);
                 } else {
-                    pos = new Point(pos.x, pos.y + 1);
+                    pos = new DirectionPoint(new Point(pos.point().x, pos.point().y + 1), head);
                 }
             }
             case RIGHT -> {
-                if (pos.x + 1 >= COLUMNS) {
-                    pos = new Point(0, pos.y);
+                if (pos.point().x + 1 >= COLUMNS) {
+                    pos = new DirectionPoint(new Point(0, pos.point().y), head);
                 } else {
-                    pos = new Point(pos.x + 1, pos.y);
+                    pos = new DirectionPoint(new Point(pos.point().x + 1, pos.point().y), head);
                 }
             }
             case LEFT -> {
-                if (pos.x <= 0) {
-                    pos = new Point(COLUMNS - 1, pos.y);
+                if (pos.point().x <= 0) {
+                    pos = new DirectionPoint(new Point(COLUMNS - 1, pos.point().y), head);
                 } else {
-                    pos = new Point(pos.x - 1, pos.y);
+                    pos = new DirectionPoint(new Point(pos.point().x - 1, pos.point().y), head);
                 }
             }
             default -> throw new IllegalArgumentException("Snake does not face any direction :(");
@@ -92,13 +81,13 @@ public class Player {
         moveOnTo();
     }
     
-    private void moveOnTo() {
+    protected void moveOnTo() {
         boolean appleEaten = false;
         List<Point> appleListCopy = board.getApples().stream().toList();
         for (Point p : appleListCopy) {
             assert(!body.isEmpty());
-            if (pos.x == p.x && pos.y == p.y) {
-                board.eatApple(new Point(pos.x, pos.y));
+            if (pos.point().x == p.x && pos.point().y == p.y) {
+                board.eatApple(new Point(pos.point().x, pos.point().y));
                 appleEaten = true;
                 board.createApple();
             }
@@ -116,16 +105,16 @@ public class Player {
         Point nextPos;
         switch (head) {
             case UP -> {
-                nextPos = new Point(pos.x, pos.y - 1);
+                nextPos = new Point(pos.point().x, pos.point().y - 1);
             }
             case DOWN -> {
-                nextPos = new Point(pos.x, pos.y + 1);
+                nextPos = new Point(pos.point().x, pos.point().y + 1);
             }
             case RIGHT -> {
-                nextPos = new Point(pos.x + 1, pos.y);
+                nextPos = new Point(pos.point().x + 1, pos.point().y);
             }
             case LEFT -> {
-                nextPos = new Point(pos.x - 1, pos.y);
+                nextPos = new Point(pos.point().x - 1, pos.point().y);
             }
             default -> throw new IllegalArgumentException("snake is directionless");
         }
@@ -133,25 +122,25 @@ public class Player {
 
 /*
         // prevent the player from moving off the edge of the board sideways
-        if (nextPos.x < 0) {
+        if (nextpos.point().x < 0) {
             // nextPos..x = 0;
             board.endGame();
-        } else if (nextPos.x >= COLUMNS) {
+        } else if (nextpos.point().x >= COLUMNS) {
             // nextPos..x = Board.COLUMNS - 1;
             board.endGame();
         }
         // prevent the player from moving off the edge of the board vertically
-        if (nextPos.y < 0) {
+        if (nextpos.point().y < 0) {
             // nextPos..y = 0;
             board.endGame();
-        } else if (nextPos.y >= ROWS) {
+        } else if (nextpos.point().y >= ROWS) {
             // nextPos..y = Board.ROWS - 1;
             board.endGame();
         }
  */
 
         // prevent biting yourself
-        if (body.contains(nextPos)) {
+        if (body.stream().map(DirectionPoint::point).toList().contains(nextPos)) {
             board.endGame();
         }
 
@@ -168,21 +157,12 @@ public class Player {
 
     public void draw(Graphics g, ImageObserver observer) {
         // with the Point class, note that pos.getX() returns a double, but
-        // pos.x reliably returns an int. https://stackoverflow.com/a/30220114/4655368
+        // pos.point().x reliably returns an int. https://stackoverflow.com/a/30220114/4655368
         // this is also where we translate board grid position into a canvas pixel
         // position by multiplying by the tile size.
         g.setColor(new Color(0, 255, 0));
-        for (Point p : body) {
-            if (p.equals(pos)) {
-                g.drawImage(
-                        image,
-                        p.x * Board.TILE_SIZE,
-                        p.y * Board.TILE_SIZE,
-                        board
-                );
-            } else {
-                g.fillRect(p.x * Board.TILE_SIZE, p.y * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);
-            }
+        for (DirectionPoint p : body) {
+            g.fillRect(p.point().x * Board.TILE_SIZE, p.point().y * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);
         }
 
 
@@ -216,7 +196,7 @@ public class Player {
         }
     }
 
-    public Queue<Point> getBody() {
+    public Queue<DirectionPoint> getBody() {
         return body;
     }
 

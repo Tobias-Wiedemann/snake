@@ -1,6 +1,9 @@
 package board;
 
+import player.DirectionPoint;
 import player.Player;
+import player.PlayerWithGraphics;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -35,7 +38,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         setBackground(color);
 
         // initialize the game state
-        player = new Player(COLUMNS / 2, ROWS / 2, this);
+        player = new PlayerWithGraphics(COLUMNS / 2, ROWS / 2, this);
         createApple();
 
         // this timer will call the actionPerformed() method every DELAY ms
@@ -152,8 +155,8 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
             y = random.nextInt(ROWS - 1);
             // if this stays false then its valid
             boolean invalidSpotFlag = false;
-            for (Point p : player.getBody()) {
-                if (p.x == x && p.y == y) {
+            for (DirectionPoint p : player.getBody()) {
+                if (p.point().x == x && p.point().y == y) {
                     x = random.nextInt(COLUMNS - 1);
                     y = random.nextInt(ROWS - 1);
                     invalidSpotFlag = true;
