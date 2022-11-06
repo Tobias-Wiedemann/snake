@@ -26,14 +26,16 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     protected final ArrayList<Point> apples;
     private final Random random;
     protected final String difficulty;
+    protected static int SCORE_HEIGHT;
     public Board(final int rows, final int columns, Color color, String difficulty) {
         ROWS = rows;
         COLUMNS = columns;
+        SCORE_HEIGHT = 3;
         gameOver = false;
         apples = new ArrayList<Point>();
         random = new Random(SEED);
         this.difficulty = difficulty;
-        setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * ROWS));
+        setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * (ROWS + SCORE_HEIGHT)));
         // set the game board background color
         setBackground(color);
 
@@ -107,16 +109,22 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         // draw a checkered background
         g.setColor(new Color(0, 0, 0));
         g.fillRect(0, 0, TILE_SIZE * COLUMNS, TILE_SIZE * ROWS);
+        g.setColor(new Color(124, 137, 150, 255));
+        g.fillRect(0, TILE_SIZE * ROWS, TILE_SIZE * COLUMNS, TILE_SIZE * SCORE_HEIGHT);
     }
 
     public void drawScore(Graphics g) {
         // set the text to be displayed
-        String text;
+        String playersScore;
         if (player.getScore().equals("1")) {
-            text = player.getScore() + " Apple";
+            playersScore = player.getScore() + " Apple";
         } else {
-            text = player.getScore() + " Apples";
+            playersScore = player.getScore() + " Apples";
         }
+        String yourScoreText = "Current Score:";
+        String highScoreText = "Highscore:";
+        String exampleHighScore = "69 Apples";
+        String difficultyText = "Difficulty:";
         // we need to cast the Graphics to Graphics2D to draw nicer text
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(
@@ -129,22 +137,30 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
                 RenderingHints.KEY_FRACTIONALMETRICS,
                 RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         // set the text color and font
-        g2d.setColor(new Color(30, 201, 139));
-        g2d.setFont(new Font("Lato", Font.BOLD, 25));
+        g2d.setColor(new Color(0, 0, 0));
+        g2d.setFont(new Font("Lato", Font.BOLD, 20));
         // draw the score in the bottom center of the screen
         // https://stackoverflow.com/a/27740330/4655368
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
         // the text will be contained within this rectangle.
-        // here I've sized it to be the entire bottom row of board tiles
-        Rectangle rect = new Rectangle(0, TILE_SIZE * (ROWS - 1), TILE_SIZE * COLUMNS, TILE_SIZE);
+        Rectangle scoreRect = new Rectangle(0, TILE_SIZE * ROWS + TILE_SIZE / 2, TILE_SIZE * COLUMNS, TILE_SIZE);
         // determine the x coordinate for the text
-        int x = rect.x + (rect.width - metrics.stringWidth(text)) / 2;
+
+        //int scoreRectX = scoreRect.x + (scoreRect.width / 3 - metrics.stringWidth(playersScore));
+        int scoreRectX = TILE_SIZE;
+        int f = metrics.stringWidth(highScoreText);
+        int highscoreX = scoreRect.x + (scoreRect.width / 2 - metrics.stringWidth(highScoreText) / 2);
+        int difficultyX = scoreRect.x + (scoreRect.width - TILE_SIZE - Math.max(metrics.stringWidth(difficultyText), metrics.stringWidth(difficulty)));
         // determine the y coordinate for the text
         // (note we add the ascent, as in java 2d 0 is top of the screen)
-        int y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
+        int scoreRectY = scoreRect.y + ((scoreRect.height - metrics.getHeight()) / 2) + metrics.getAscent();
         // draw the string
-        g2d.drawString(text, x, y);
-
+        g2d.drawString(yourScoreText, scoreRectX, scoreRectY);
+        g2d.drawString(playersScore, scoreRectX, scoreRectY + TILE_SIZE);
+        g2d.drawString(highScoreText, highscoreX, scoreRectY);
+        g2d.drawString(exampleHighScore, highscoreX, scoreRectY + TILE_SIZE);
+        g2d.drawString(difficultyText, difficultyX, scoreRectY);
+        g2d.drawString(difficulty, difficultyX, scoreRectY + TILE_SIZE);
     }
 
     public void createApple() {
@@ -180,6 +196,10 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
 
     public void endGame() {
         gameOver = true;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 
     public java.util.List<Point> getApples() {

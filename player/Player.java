@@ -41,7 +41,9 @@ public class Player {
     }
 
     public void move() {
-        validateMove();
+        if (!validateMove()) {
+            return;
+        }
 
         // Move the neck up
         neck = head;
@@ -101,7 +103,7 @@ public class Player {
         }
     }
 
-    public void validateMove() {
+    public boolean validateMove() {
         // this gets called once every tick, before the repainting process happens.
         // so we can do anything needed in here to update the state of the player.
 
@@ -147,8 +149,9 @@ public class Player {
         if (body.stream().map(DirectionPoint::getPoint).toList().contains(nextPos)
                 && nextPos != body.peek().getPoint()) {
             board.endGame();
+            return false;
         }
-
+        return true;
     }
 
 

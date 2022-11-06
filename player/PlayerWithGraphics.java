@@ -16,9 +16,13 @@ import java.util.List;
 public class PlayerWithGraphics extends Player {
 
     protected BufferedImage snake_head_up;
+    protected BufferedImage snake_headache_up;
     protected BufferedImage snake_head_down;
+    protected BufferedImage snake_headache_down;
     protected BufferedImage snake_head_left;
+    protected BufferedImage snake_headache_left;
     protected BufferedImage snake_head_right;
+    protected BufferedImage snake_headache_right;
     protected BufferedImage snake_body_horizontal;
     protected BufferedImage snake_body_vertical;
     protected BufferedImage snake_corner_left_down;
@@ -63,6 +67,35 @@ public class PlayerWithGraphics extends Player {
             // you can use just the filename if the image file is in your
             // project folder, otherwise you need to provide the file path.
             snake_head_right = ImageIO.read(new File("images/snake_head_right.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        // Headaches
+        try {
+            // you can use just the filename if the image file is in your
+            // project folder, otherwise you need to provide the file path.
+            snake_headache_up = ImageIO.read(new File("images/snake_apfel.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            // you can use just the filename if the image file is in your
+            // project folder, otherwise you need to provide the file path.
+            snake_headache_down = ImageIO.read(new File("images/snake_apfel.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            // you can use just the filename if the image file is in your
+            // project folder, otherwise you need to provide the file path.
+            snake_headache_left = ImageIO.read(new File("images/snake_apfel.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            // you can use just the filename if the image file is in your
+            // project folder, otherwise you need to provide the file path.
+            snake_headache_right = ImageIO.read(new File("images/snake_apfel.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
@@ -175,6 +208,14 @@ public class PlayerWithGraphics extends Player {
                 // Head
                 switch (p.getDirection()) {
                     case UP -> {
+                        if (board.isGameOver()) {
+                            g.drawImage(
+                                    snake_headache_up,
+                                    p.getPoint().x * Board.TILE_SIZE,
+                                    p.getPoint().y * Board.TILE_SIZE,
+                                    board);
+                            continue;
+                        }
                         g.drawImage(
                                 snake_head_up,
                                 p.getPoint().x * Board.TILE_SIZE,
@@ -183,6 +224,14 @@ public class PlayerWithGraphics extends Player {
                         continue;
                     }
                     case DOWN -> {
+                        if (board.isGameOver()) {
+                            g.drawImage(
+                                    snake_headache_down,
+                                    p.getPoint().x * Board.TILE_SIZE,
+                                    p.getPoint().y * Board.TILE_SIZE,
+                                    board);
+                            continue;
+                        }
                         g.drawImage(
                                 snake_head_down,
                                 p.getPoint().x * Board.TILE_SIZE,
@@ -191,6 +240,14 @@ public class PlayerWithGraphics extends Player {
                         continue;
                     }
                     case RIGHT -> {
+                        if (board.isGameOver()) {
+                            g.drawImage(
+                                    snake_headache_right,
+                                    p.getPoint().x * Board.TILE_SIZE,
+                                    p.getPoint().y * Board.TILE_SIZE,
+                                    board);
+                            continue;
+                        }
                         g.drawImage(
                                 snake_head_right,
                                 p.getPoint().x * Board.TILE_SIZE,
@@ -199,6 +256,14 @@ public class PlayerWithGraphics extends Player {
                         continue;
                     }
                     case LEFT -> {
+                        if (board.isGameOver()) {
+                            g.drawImage(
+                                    snake_headache_left,
+                                    p.getPoint().x * Board.TILE_SIZE,
+                                    p.getPoint().y * Board.TILE_SIZE,
+                                    board);
+                            continue;
+                        }
                         g.drawImage(
                                 snake_head_left,
                                 p.getPoint().x * Board.TILE_SIZE,
