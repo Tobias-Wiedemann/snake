@@ -1,21 +1,12 @@
 package player;
 
 import board.Board;
-import board.fieldType;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Queue;
-
 import static board.Board.COLUMNS;
 import static board.Board.ROWS;
 
@@ -172,8 +163,6 @@ public class Player {
         for (DirectionPoint p : body) {
             g.fillRect(p.getPoint().x * Board.TILE_SIZE, p.getPoint().y * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);
         }
-
-
     }
 
     public void keyPressed(KeyEvent e) {
@@ -185,18 +174,18 @@ public class Player {
         // one whole tile for this input
         switch (neck) {
             case UP, DOWN -> {
-                if (key == KeyEvent.VK_RIGHT) {
+                if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
                     head = Direction.RIGHT;
                 }
-                if (key == KeyEvent.VK_LEFT) {
+                if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
                     head = Direction.LEFT;
                 }
             }
             case RIGHT, LEFT-> {
-                if (key == KeyEvent.VK_UP) {
+                if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
                     head = Direction.UP;
                 }
-                if (key == KeyEvent.VK_DOWN) {
+                if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
                     head = Direction.DOWN;
                 }
             }

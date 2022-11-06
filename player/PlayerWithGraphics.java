@@ -8,21 +8,21 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 public class PlayerWithGraphics extends Player {
 
     protected BufferedImage snake_head_up;
-    protected BufferedImage snake_headache_up;
+    protected BufferedImage snake_head_dead_up_a;
+    protected BufferedImage snake_head_dead_up_b;
     protected BufferedImage snake_head_down;
-    protected BufferedImage snake_headache_down;
+    protected BufferedImage snake_head_dead_down_a;
+    protected BufferedImage snake_head_dead_down_b;
     protected BufferedImage snake_head_left;
-    protected BufferedImage snake_headache_left;
+    protected BufferedImage snake_head_dead_left_a;
+    protected BufferedImage snake_head_dead_left_b;
     protected BufferedImage snake_head_right;
-    protected BufferedImage snake_headache_right;
+    protected BufferedImage snake_head_dead_right_a;
+    protected BufferedImage snake_head_dead_right_b;
     protected BufferedImage snake_body_horizontal;
     protected BufferedImage snake_body_vertical;
     protected BufferedImage snake_corner_left_down;
@@ -33,157 +33,149 @@ public class PlayerWithGraphics extends Player {
     protected BufferedImage snake_tail_downwards;
     protected BufferedImage snake_tail_leftwards;
     protected BufferedImage snake_tail_rightwards;
-    protected BufferedImage snake_egg;
+    protected BufferedImage snake_egg_a;
+    protected BufferedImage snake_egg_b;
+    protected BufferedImage REAL_EGG;
+    private boolean starAnimator;
 
     public PlayerWithGraphics(final int xStart, final int yStart, final Board board) {
         super(xStart, yStart, board);
         loadImages();
+        starAnimator = false;
     }
 
     protected void loadImages() {
         // HEAD
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_head_up = ImageIO.read(new File("images/snake_head_up.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_head_down = ImageIO.read(new File("images/snake_head_down.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_head_left = ImageIO.read(new File("images/snake_head_left.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_head_right = ImageIO.read(new File("images/snake_head_right.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
-        // Headaches
+        // Head deads
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
-            snake_headache_up = ImageIO.read(new File("images/snake_apfel.png"));
+            snake_head_dead_up_a = ImageIO.read(new File("images/snake_head_dead_up_a.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
-            snake_headache_down = ImageIO.read(new File("images/snake_apfel.png"));
+            snake_head_dead_up_b = ImageIO.read(new File("images/snake_head_dead_up_b.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
-            snake_headache_left = ImageIO.read(new File("images/snake_apfel.png"));
+            snake_head_dead_down_a = ImageIO.read(new File("images/snake_head_dead_down_a.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
-            snake_headache_right = ImageIO.read(new File("images/snake_apfel.png"));
+            snake_head_dead_down_b = ImageIO.read(new File("images/snake_head_dead_down_b.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            snake_head_dead_left_a = ImageIO.read(new File("images/snake_head_dead_left_a.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            snake_head_dead_left_b = ImageIO.read(new File("images/snake_head_dead_left_b.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            snake_head_dead_right_a = ImageIO.read(new File("images/snake_head_dead_right_a.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            snake_head_dead_right_b = ImageIO.read(new File("images/snake_head_dead_right_b.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         // BODY
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_body_horizontal = ImageIO.read(new File("images/snake_body_horizontal.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_body_vertical = ImageIO.read(new File("images/snake_body_vertical.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         // BODY CORNERS
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_corner_right_up = ImageIO.read(new File("images/snake_corner_right_up.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_corner_right_down = ImageIO.read(new File("images/snake_corner_right_down.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_corner_left_up = ImageIO.read(new File("images/snake_corner_left_up.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_corner_left_down = ImageIO.read(new File("images/snake_corner_left_down.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         // TAIL
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_tail_downwards = ImageIO.read(new File("images/snake_tail_downwards.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_tail_upwards = ImageIO.read(new File("images/snake_tail_upwards.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_tail_leftwards = ImageIO.read(new File("images/snake_tail_leftwards.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
             snake_tail_rightwards = ImageIO.read(new File("images/snake_tail_rightwards.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
         // EGG
         try {
-            // you can use just the filename if the image file is in your
-            // project folder, otherwise you need to provide the file path.
-            snake_egg = ImageIO.read(new File("images/snake_apfel.png"));
+            snake_egg_a = ImageIO.read(new File("images/snake_egg_a.png"));
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
-
-
-
-
+        try {
+            snake_egg_b = ImageIO.read(new File("images/snake_egg_b.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            REAL_EGG = ImageIO.read(new File("images/THE_REAL_EGG.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
     }
 
     public void draw(Graphics g, ImageObserver observer) {
@@ -198,22 +190,48 @@ public class PlayerWithGraphics extends Player {
             // Snake size == 1 so egg
             if (p.getPoint().equals(pos.getPoint()) && body.size() == 1) {
                 g.drawImage(
-                        snake_egg,
+                        REAL_EGG,
                         p.getPoint().x * Board.TILE_SIZE,
                         p.getPoint().y * Board.TILE_SIZE,
-                        board
-                );
+                        board);
+/*
+                if (starAnimator) {
+                    g.drawImage(
+                            snake_egg_a,
+                            p.getPoint().x * Board.TILE_SIZE,
+                            p.getPoint().y * Board.TILE_SIZE,
+                            board);
+                    starAnimator = false;
+                } else {
+                    g.drawImage(
+                            snake_egg_b,
+                            p.getPoint().x * Board.TILE_SIZE,
+                            p.getPoint().y * Board.TILE_SIZE,
+                            board);
+                    starAnimator = true;
+                }
+                */
                 continue;
             } else if (p.getPoint().equals(pos.getPoint())) {
-                // Head
+                // Head (head_deads in the conditionals)
                 switch (p.getDirection()) {
                     case UP -> {
                         if (board.isGameOver()) {
-                            g.drawImage(
-                                    snake_headache_up,
-                                    p.getPoint().x * Board.TILE_SIZE,
-                                    p.getPoint().y * Board.TILE_SIZE,
-                                    board);
+                            if (starAnimator) {
+                                g.drawImage(
+                                        snake_head_dead_up_a,
+                                        p.getPoint().x * Board.TILE_SIZE,
+                                        p.getPoint().y * Board.TILE_SIZE,
+                                        board);
+                                starAnimator = false;
+                            } else {
+                                g.drawImage(
+                                        snake_head_dead_up_b,
+                                        p.getPoint().x * Board.TILE_SIZE,
+                                        p.getPoint().y * Board.TILE_SIZE,
+                                        board);
+                                starAnimator = true;
+                            }
                             continue;
                         }
                         g.drawImage(
@@ -225,11 +243,21 @@ public class PlayerWithGraphics extends Player {
                     }
                     case DOWN -> {
                         if (board.isGameOver()) {
-                            g.drawImage(
-                                    snake_headache_down,
-                                    p.getPoint().x * Board.TILE_SIZE,
-                                    p.getPoint().y * Board.TILE_SIZE,
-                                    board);
+                            if (starAnimator) {
+                                g.drawImage(
+                                        snake_head_dead_down_a,
+                                        p.getPoint().x * Board.TILE_SIZE,
+                                        p.getPoint().y * Board.TILE_SIZE,
+                                        board);
+                                starAnimator = false;
+                            } else {
+                                g.drawImage(
+                                        snake_head_dead_down_b,
+                                        p.getPoint().x * Board.TILE_SIZE,
+                                        p.getPoint().y * Board.TILE_SIZE,
+                                        board);
+                                starAnimator = true;
+                            }
                             continue;
                         }
                         g.drawImage(
@@ -241,11 +269,21 @@ public class PlayerWithGraphics extends Player {
                     }
                     case RIGHT -> {
                         if (board.isGameOver()) {
-                            g.drawImage(
-                                    snake_headache_right,
-                                    p.getPoint().x * Board.TILE_SIZE,
-                                    p.getPoint().y * Board.TILE_SIZE,
-                                    board);
+                            if (starAnimator) {
+                                g.drawImage(
+                                        snake_head_dead_right_a,
+                                        p.getPoint().x * Board.TILE_SIZE,
+                                        p.getPoint().y * Board.TILE_SIZE,
+                                        board);
+                                starAnimator = false;
+                            } else {
+                                g.drawImage(
+                                        snake_head_dead_right_b,
+                                        p.getPoint().x * Board.TILE_SIZE,
+                                        p.getPoint().y * Board.TILE_SIZE,
+                                        board);
+                                starAnimator = true;
+                            }
                             continue;
                         }
                         g.drawImage(
@@ -257,11 +295,21 @@ public class PlayerWithGraphics extends Player {
                     }
                     case LEFT -> {
                         if (board.isGameOver()) {
-                            g.drawImage(
-                                    snake_headache_left,
-                                    p.getPoint().x * Board.TILE_SIZE,
-                                    p.getPoint().y * Board.TILE_SIZE,
-                                    board);
+                            if (starAnimator) {
+                                g.drawImage(
+                                        snake_head_dead_left_a,
+                                        p.getPoint().x * Board.TILE_SIZE,
+                                        p.getPoint().y * Board.TILE_SIZE,
+                                        board);
+                                starAnimator = false;
+                            } else {
+                                g.drawImage(
+                                        snake_head_dead_left_b,
+                                        p.getPoint().x * Board.TILE_SIZE,
+                                        p.getPoint().y * Board.TILE_SIZE,
+                                        board);
+                                starAnimator = true;
+                            }
                             continue;
                         }
                         g.drawImage(
