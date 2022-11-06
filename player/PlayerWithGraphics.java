@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 public class PlayerWithGraphics extends Player {
 
@@ -23,6 +24,10 @@ public class PlayerWithGraphics extends Player {
     protected BufferedImage snake_head_right;
     protected BufferedImage snake_head_dead_right_a;
     protected BufferedImage snake_head_dead_right_b;
+    protected BufferedImage snake_tongue_right;
+    protected BufferedImage snake_tongue_up;
+    protected BufferedImage snake_tongue_down;
+    protected BufferedImage snake_tongue_left;
     protected BufferedImage snake_body_horizontal;
     protected BufferedImage snake_body_vertical;
     protected BufferedImage snake_corner_left_down;
@@ -37,11 +42,13 @@ public class PlayerWithGraphics extends Player {
     protected BufferedImage snake_egg_b;
     protected BufferedImage REAL_EGG;
     private boolean starAnimator;
+    protected Random random;
 
     public PlayerWithGraphics(final int xStart, final int yStart, final Board board) {
         super(xStart, yStart, board);
         loadImages();
         starAnimator = false;
+        random = new Random();
     }
 
     protected void loadImages() {
@@ -107,6 +114,28 @@ public class PlayerWithGraphics extends Player {
         } catch (IOException exc) {
             System.out.println("Error opening image file: " + exc.getMessage());
         }
+        // TONGUE
+        try {
+            snake_tongue_right = ImageIO.read(new File("images/snake_tongue_right.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            snake_tongue_up = ImageIO.read(new File("images/snake_tongue_up.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            snake_tongue_left = ImageIO.read(new File("images/snake_tongue_left.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+        try {
+            snake_tongue_down = ImageIO.read(new File("images/snake_tongue_down.png"));
+        } catch (IOException exc) {
+            System.out.println("Error opening image file: " + exc.getMessage());
+        }
+
         // BODY
         try {
             snake_body_horizontal = ImageIO.read(new File("images/snake_body_horizontal.png"));
@@ -232,6 +261,11 @@ public class PlayerWithGraphics extends Player {
                                         board);
                                 starAnimator = true;
                             }
+                            g.drawImage(
+                                    snake_tongue_up,
+                                    p.getPoint().x * Board.TILE_SIZE,
+                                    (p.getPoint().y - 1) * Board.TILE_SIZE,
+                                    board);
                             continue;
                         }
                         g.drawImage(
@@ -258,6 +292,11 @@ public class PlayerWithGraphics extends Player {
                                         board);
                                 starAnimator = true;
                             }
+                            g.drawImage(
+                                    snake_tongue_down,
+                                    p.getPoint().x * Board.TILE_SIZE,
+                                    (p.getPoint().y + 1) * Board.TILE_SIZE,
+                                    board);
                             continue;
                         }
                         g.drawImage(
@@ -284,6 +323,11 @@ public class PlayerWithGraphics extends Player {
                                         board);
                                 starAnimator = true;
                             }
+                            g.drawImage(
+                                    snake_tongue_right,
+                                    (p.getPoint().x + 1) * Board.TILE_SIZE,
+                                    p.getPoint().y * Board.TILE_SIZE,
+                                    board);
                             continue;
                         }
                         g.drawImage(
@@ -310,6 +354,11 @@ public class PlayerWithGraphics extends Player {
                                         board);
                                 starAnimator = true;
                             }
+                            g.drawImage(
+                                    snake_tongue_left,
+                                    (p.getPoint().x - 1) * Board.TILE_SIZE,
+                                    p.getPoint().y * Board.TILE_SIZE,
+                                    board);
                             continue;
                         }
                         g.drawImage(
@@ -421,6 +470,40 @@ public class PlayerWithGraphics extends Player {
             } else {
                 throw new IllegalArgumentException("Weird direction combination");
             }
+        }
+
+        if (random.nextInt(100) > 90) {
+            switch (pos.getDirection()) {
+                case RIGHT -> {
+                    g.drawImage(
+                            snake_tongue_right,
+                            (pos.getPoint().x + 1) * Board.TILE_SIZE,
+                            pos.getPoint().y * Board.TILE_SIZE,
+                            board);
+                }
+                case LEFT -> {
+                    g.drawImage(
+                            snake_tongue_left,
+                            (pos.getPoint().x - 1) * Board.TILE_SIZE,
+                            pos.getPoint().y * Board.TILE_SIZE,
+                            board);
+                }
+                case UP -> {
+                    g.drawImage(
+                            snake_tongue_up,
+                            pos.getPoint().x * Board.TILE_SIZE,
+                            (pos.getPoint().y - 1) * Board.TILE_SIZE,
+                            board);
+                }
+                case DOWN -> {
+                    g.drawImage(
+                            snake_tongue_down,
+                            pos.getPoint().x * Board.TILE_SIZE,
+                            (pos.getPoint().y + 1) * Board.TILE_SIZE,
+                            board);
+                }
+            }
+            
         }
 
 

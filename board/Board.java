@@ -14,7 +14,7 @@ import java.util.Random;
 
 public abstract class Board extends JPanel implements ActionListener, KeyListener {
 
-    public static final int SEED = 43;
+    public static final int SEED = 42;
     public static final int TILE_SIZE = 25;
     public static int ROWS;
     public static int COLUMNS;
