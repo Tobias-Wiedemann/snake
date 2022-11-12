@@ -25,11 +25,19 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     private final Random random;
     protected final String difficulty;
     protected static int SCORE_HEIGHT;
+    protected boolean endScreen;
+    protected boolean restartButtonActive;
+    protected boolean menuButtonActive;
+
+
     public Board(final int rows, final int columns, Color color, String difficulty) {
         ROWS = rows;
         COLUMNS = columns;
         SCORE_HEIGHT = 3;
-        gameOver = false;
+        gameOver = true;
+        endScreen = false;
+        restartButtonActive = false;
+        menuButtonActive = false;
         apples = new ArrayList<Point>();
         random = new Random(SEED);
         this.difficulty = difficulty;
@@ -82,6 +90,11 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         drawScore(g);
         player.draw(g, this);
 
+        // GameOver message
+        if (gameOver) {
+            drawGameOver(g);
+        }
+
         // this smooths out animations on some systems
         Toolkit.getDefaultToolkit().sync();
     }
@@ -109,6 +122,57 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         g.fillRect(0, 0, TILE_SIZE * COLUMNS, TILE_SIZE * ROWS);
         g.setColor(new Color(124, 137, 150, 255));
         g.fillRect(0, TILE_SIZE * ROWS, TILE_SIZE * COLUMNS, TILE_SIZE * SCORE_HEIGHT);
+    }
+
+    public void drawGameOver(Graphics g) {
+        String gameOverString = "Game Over";
+        String restartString = "Restart?";
+        String menuString = "Back to Menu";
+        // we need to cast the Graphics to Graphics2D to draw nicer text
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        // set the text color and font
+        g2d.setColor(new Color(124, 137, 150));
+        g2d.setFont(new Font("Lato", Font.BOLD, 20));
+        // draw the score in the bottom center of the screen
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        // the text will be contained within this rectangle.
+        Rectangle gameOverRect = new Rectangle(0, TILE_SIZE * ROWS / 2, TILE_SIZE * COLUMNS, TILE_SIZE * 3);
+        g2d.setFont(new Font("Lato", Font.BOLD, 45));
+        int gameOverStringX = gameOverRect.width / 2 - metrics.stringWidth(gameOverString) / 2 - TILE_SIZE * 2;
+        int gameOverStringY = gameOverRect.y;
+        int restartMenuStringY = gameOverRect.y + TILE_SIZE * 2;
+
+        g2d.drawString(gameOverString, gameOverStringX, gameOverStringY);
+
+
+        if (restartButtonActive) {
+            g2d.setFont(new Font("Lato", Font.BOLD, 45));
+            int restartStringX = COLUMNS * TILE_SIZE / 2 - metrics.stringWidth(restartString) - TILE_SIZE;
+            g2d.drawString(restartString, restartStringX, restartMenuStringY);
+        } else {
+            g2d.setFont(new Font("Lato", Font.BOLD, 20));
+            int restartStringX = COLUMNS * TILE_SIZE / 2 - metrics.stringWidth(restartString) - TILE_SIZE;
+            g2d.drawString(restartString, restartStringX, restartMenuStringY);
+        }
+
+        int menuStringX = COLUMNS * TILE_SIZE / 2 + TILE_SIZE;
+        if (menuButtonActive) {
+            g2d.setFont(new Font("Lato", Font.BOLD, 45));
+            g2d.drawString(menuString, menuStringX, restartMenuStringY);
+        } else {
+            g2d.setFont(new Font("Lato", Font.BOLD, 20));
+            g2d.drawString(menuString, menuStringX, restartMenuStringY);
+        }
+
     }
 
     public void drawScore(Graphics g) {
@@ -214,4 +278,23 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         }
     }
 
+    public void setRestartButton(boolean b) {
+        restartButtonActive = b;
+    }
+
+    public void setMenuButton(boolean b) {
+        menuButtonActive = b;
+    }
+
+    public boolean isMenuButtonActive() {
+        return menuButtonActive;
+    }
+
+    public boolean isRestartButtonActive() {
+        return restartButtonActive;
+    }
+
+    public boolean isEndScreen() {
+        return endScreen;
+    }
 }
