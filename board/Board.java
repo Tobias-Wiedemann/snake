@@ -35,7 +35,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         COLUMNS = columns;
         SCORE_HEIGHT = 3;
         gameOver = true;
-        endScreen = false;
+        endScreen = true;
         restartButtonActive = false;
         menuButtonActive = false;
         apples = new ArrayList<Point>();
@@ -92,7 +92,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
 
         // GameOver message
         if (gameOver) {
-            drawGameOver(g);
+            drawEndScreen(g);
         }
 
         // this smooths out animations on some systems
@@ -124,7 +124,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         g.fillRect(0, TILE_SIZE * ROWS, TILE_SIZE * COLUMNS, TILE_SIZE * SCORE_HEIGHT);
     }
 
-    public void drawGameOver(Graphics g) {
+    public void drawEndScreen(Graphics g) {
         String gameOverString = "Game Over";
         String restartString = "Restart?";
         String menuString = "Back to Menu";
@@ -155,7 +155,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
 
 
         if (restartButtonActive) {
-            g2d.setFont(new Font("Lato", Font.BOLD, 45));
+            g2d.setFont(new Font("Lato", Font.BOLD, 24));
             int restartStringX = COLUMNS * TILE_SIZE / 2 - metrics.stringWidth(restartString) - TILE_SIZE;
             g2d.drawString(restartString, restartStringX, restartMenuStringY);
         } else {
@@ -166,7 +166,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
 
         int menuStringX = COLUMNS * TILE_SIZE / 2 + TILE_SIZE;
         if (menuButtonActive) {
-            g2d.setFont(new Font("Lato", Font.BOLD, 45));
+            g2d.setFont(new Font("Lato", Font.BOLD, 24));
             g2d.drawString(menuString, menuStringX, restartMenuStringY);
         } else {
             g2d.setFont(new Font("Lato", Font.BOLD, 20));

@@ -199,6 +199,7 @@ public class Player {
             // If nothing is selected yet
             if (!board.isMenuButtonActive() && !board.isRestartButtonActive()) {
                 board.setRestartButton(true);
+                return;
             }
 
             // Moving selected button
