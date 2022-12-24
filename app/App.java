@@ -47,6 +47,11 @@ public class App {
     }
 
     public static void initGame(boolean graphics, String difficulty) {
+        // Close the window if it is a restart
+        if (window != null) {
+            window.dispose();
+        }
+
         // create a window frame and set the title in the toolbar
         window = new JFrame("Snake");
         // when we close the window, stop the app

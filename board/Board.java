@@ -34,8 +34,8 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         ROWS = rows;
         COLUMNS = columns;
         SCORE_HEIGHT = 3;
-        gameOver = true;
-        endScreen = true;
+        gameOver = false;
+        endScreen = false;
         restartButtonActive = false;
         menuButtonActive = false;
         apples = new ArrayList<Point>();
@@ -258,6 +258,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
 
     public void endGame() {
         gameOver = true;
+        endScreen = true;
     }
 
     public boolean isGameOver() {
