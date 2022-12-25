@@ -1,21 +1,30 @@
 package board;
 
+import app.App;
 import player.DirectionPoint;
 import player.Player;
 import player.PlayerWithGraphics;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class Board extends JPanel implements ActionListener, KeyListener {
+public abstract class Board extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
+
+    private int x,y;
+    private String str;
 
     public static final int SEED = 42;
     public static final int TILE_SIZE = 25;
+    public static final int TOP_LEFT_X_RESTART_BUTTON = 150;
+    public static final int TOP_RIGHT_X_RESTART_BUTTON = 245;
+    public static final int TOP_LEFT_Y_RESTART_BUTTON = 235;
+    public static final int TOP_RIGHT_Y_RESTART_BUTTON = 255;
+    public static final int TOP_LEFT_X_MENU_BUTTON = 280;
+    public static final int TOP_RIGHT_X_MENU_BUTTON = 440;
+    public static final int TOP_LEFT_Y_MENU_BUTTON = 235;
+    public static final int TOP_RIGHT_Y_MENU_BUTTON = 255;
     public static int ROWS;
     public static int COLUMNS;
     protected Timer timer;
@@ -25,11 +34,19 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     private final Random random;
     protected final String difficulty;
     protected static int SCORE_HEIGHT;
+    protected boolean endScreen;
+    protected boolean restartButtonActive;
+    protected boolean menuButtonActive;
+
+
     public Board(final int rows, final int columns, Color color, String difficulty) {
         ROWS = rows;
         COLUMNS = columns;
         SCORE_HEIGHT = 3;
         gameOver = false;
+        endScreen = false;
+        restartButtonActive = false;
+        menuButtonActive = false;
         apples = new ArrayList<Point>();
         random = new Random(SEED);
         this.difficulty = difficulty;
@@ -52,7 +69,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
             default -> throw new IllegalArgumentException("Invalid difficulty setting");
         }
         timer.start();
-
+        str = " ";
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -81,6 +98,11 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         drawApples(g);
         drawScore(g);
         player.draw(g, this);
+
+        // GameOver message
+        if (gameOver) {
+            drawEndScreen(g);
+        }
 
         // this smooths out animations on some systems
         Toolkit.getDefaultToolkit().sync();
@@ -111,6 +133,57 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         g.fillRect(0, TILE_SIZE * ROWS, TILE_SIZE * COLUMNS, TILE_SIZE * SCORE_HEIGHT);
     }
 
+    public void drawEndScreen(Graphics g) {
+        String gameOverString = "Game Over";
+        String restartString = "Restart?";
+        String menuString = "Back to Menu";
+        // we need to cast the Graphics to Graphics2D to draw nicer text
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        // set the text color and font
+        g2d.setColor(new Color(124, 137, 150));
+        g2d.setFont(new Font("Lato", Font.BOLD, 20));
+        // draw the score in the bottom center of the screen
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        // the text will be contained within this rectangle.
+        Rectangle gameOverRect = new Rectangle(0, TILE_SIZE * ROWS / 2, TILE_SIZE * COLUMNS, TILE_SIZE * 3);
+        g2d.setFont(new Font("Lato", Font.BOLD, 45));
+        int gameOverStringX = gameOverRect.width / 2 - metrics.stringWidth(gameOverString) / 2 - TILE_SIZE * 2;
+        int gameOverStringY = gameOverRect.y;
+        int restartMenuStringY = gameOverRect.y + TILE_SIZE * 2;
+
+        g2d.drawString(gameOverString, gameOverStringX, gameOverStringY);
+
+
+        if (restartButtonActive) {
+            g2d.setFont(new Font("Lato", Font.BOLD, 24));
+            int restartStringX = COLUMNS * TILE_SIZE / 2 - metrics.stringWidth(restartString) - TILE_SIZE;
+            g2d.drawString(restartString, restartStringX, restartMenuStringY);
+        } else {
+            g2d.setFont(new Font("Lato", Font.BOLD, 20));
+            int restartStringX = COLUMNS * TILE_SIZE / 2 - metrics.stringWidth(restartString) - TILE_SIZE;
+            g2d.drawString(restartString, restartStringX, restartMenuStringY);
+        }
+
+        int menuStringX = COLUMNS * TILE_SIZE / 2 + TILE_SIZE;
+        if (menuButtonActive) {
+            g2d.setFont(new Font("Lato", Font.BOLD, 24));
+            g2d.drawString(menuString, menuStringX, restartMenuStringY);
+        } else {
+            g2d.setFont(new Font("Lato", Font.BOLD, 20));
+            g2d.drawString(menuString, menuStringX, restartMenuStringY);
+        }
+
+    }
+
     public void drawScore(Graphics g) {
         // set the text to be displayed
         String playersScore;
@@ -121,7 +194,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         }
         String yourScoreText = "Current Score:";
         String highScoreText = "Highscore:";
-        String exampleHighScore = "69 Apples";
+        String exampleHighScore = "";
         String difficultyText = "Difficulty:";
         // we need to cast the Graphics to Graphics2D to draw nicer text
         Graphics2D g2d = (Graphics2D) g;
@@ -194,6 +267,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
 
     public void endGame() {
         gameOver = true;
+        endScreen = true;
     }
 
     public boolean isGameOver() {
@@ -212,6 +286,94 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
                 player.addScore(1);
             }
         }
+    }
+
+    public void setRestartButton(boolean b) {
+        restartButtonActive = b;
+    }
+
+    public void setMenuButton(boolean b) {
+        menuButtonActive = b;
+    }
+
+    public boolean isMenuButtonActive() {
+        return menuButtonActive;
+    }
+
+    public boolean isRestartButtonActive() {
+        return restartButtonActive;
+    }
+
+    public boolean isEndScreen() {
+        return endScreen;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        x = e.getX();
+        y = e.getY();
+        // str = "x="+x+", y="+y;
+        // restart button
+        if (x >= TOP_LEFT_X_RESTART_BUTTON && x <= TOP_RIGHT_Y_RESTART_BUTTON
+                && y >= TOP_LEFT_Y_RESTART_BUTTON && y <= TOP_RIGHT_Y_RESTART_BUTTON) {
+            App.initGame(App.getGraphics(), App.getDifficulty());
+        }
+        // menu button
+        if (x >= TOP_LEFT_X_MENU_BUTTON && x <= TOP_RIGHT_X_MENU_BUTTON
+                && y >= TOP_LEFT_Y_MENU_BUTTON &&  y <= TOP_RIGHT_Y_MENU_BUTTON) {
+            // TODO
+        }
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        // only relevant on the score screen
+        if (!gameOver) {
+            return;
+        }
+
+        x = e.getX();
+        y = e.getY();
+
+        // restart button
+        if (x >= TOP_LEFT_X_RESTART_BUTTON && x <= TOP_RIGHT_Y_RESTART_BUTTON
+                && y >= TOP_LEFT_Y_RESTART_BUTTON && y <= TOP_RIGHT_Y_RESTART_BUTTON) {
+            restartButtonActive = true;
+            menuButtonActive = false;
+        }
+        // menu button
+        if (x >= TOP_LEFT_X_MENU_BUTTON && x <= TOP_RIGHT_X_MENU_BUTTON
+                && y >= TOP_LEFT_Y_MENU_BUTTON &&  y <= TOP_RIGHT_Y_MENU_BUTTON) {
+            menuButtonActive = true;
+            restartButtonActive = false;
+        }
+
     }
 
 }

@@ -503,13 +503,7 @@ public class PlayerWithGraphics extends Player {
                             board);
                 }
             }
-            
         }
-
-
     }
-
-
-
 
 }

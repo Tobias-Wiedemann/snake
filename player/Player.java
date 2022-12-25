@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Queue;
 import static board.Board.COLUMNS;
 import static board.Board.ROWS;
+import app.App;
 
 public class Player {
 
@@ -172,24 +173,57 @@ public class Player {
 
         // depending on which arrow key was pressed, we're going to move the player by
         // one whole tile for this input
-        switch (neck) {
-            case UP, DOWN -> {
-                if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
-                    head = Direction.RIGHT;
+        if (!board.isEndScreen()) {
+            switch (neck) {
+                case UP, DOWN -> {
+                    if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
+                        head = Direction.RIGHT;
+                    }
+                    if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
+                        head = Direction.LEFT;
+                    }
                 }
-                if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
-                    head = Direction.LEFT;
+                case RIGHT, LEFT-> {
+                    if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
+                        head = Direction.UP;
+                    }
+                    if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
+                        head = Direction.DOWN;
+                    }
                 }
+                default -> throw new IllegalArgumentException("Snake's neck does not face any direction :(");
             }
-            case RIGHT, LEFT-> {
-                if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
-                    head = Direction.UP;
-                }
-                if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
-                    head = Direction.DOWN;
-                }
+        } else {
+            // EndScreen shit
+
+            // If nothing is selected yet
+            if (!board.isMenuButtonActive() && !board.isRestartButtonActive()) {
+                board.setRestartButton(true);
+                return;
             }
-            default -> throw new IllegalArgumentException("Snake's neck does not face any direction :(");
+
+            // Moving selected button
+            if (key == KeyEvent.VK_LEFT
+                    || key == KeyEvent.VK_A || key == KeyEvent.VK_RIGHT
+                    || key == KeyEvent.VK_D) {
+                if (board.isRestartButtonActive()) {
+                    board.setRestartButton(false);
+                    board.setMenuButton(true);
+                } else {
+                    board.setRestartButton(true);
+                    board.setMenuButton(false);
+                }
+
+            }
+
+            if (board.isRestartButtonActive() && key == KeyEvent.VK_ENTER) {
+                App.initGame(App.getGraphics(), App.getDifficulty());
+            }
+
+            if (board.isMenuButtonActive() && key == KeyEvent.VK_ENTER) {
+                // TODO menu
+
+            }
         }
     }
 
