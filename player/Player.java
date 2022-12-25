@@ -217,7 +217,6 @@ public class Player {
             }
 
             if (board.isRestartButtonActive() && key == KeyEvent.VK_ENTER) {
-                App.removeBoard(board);
                 App.initGame(App.getGraphics(), App.getDifficulty());
             }
 

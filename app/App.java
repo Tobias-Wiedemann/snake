@@ -4,7 +4,6 @@ import board.Board;
 import board.BoardWithGraphics;
 import board.SimpleBoard;
 import menu.Menu;
-
 import javax.swing.*;
 
 public class App {
@@ -69,6 +68,8 @@ public class App {
         window.add(board);
         // pass keyboard inputs to the jpanel
         window.addKeyListener(board);
+        window.addMouseListener(board);
+        window.addMouseMotionListener(board);
 
         // don't allow the user to resize the window
         window.setResizable(false);
@@ -114,7 +115,7 @@ public class App {
         // just know that when main runs it will call initWindow() once.
         setAppGoing(true);
         setGraphics(true);
-        setDifficulty("EXTREME");
+        setDifficulty("HYPAEXTREME");
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 initGame(graphics, difficulty);

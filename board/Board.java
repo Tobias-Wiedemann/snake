@@ -1,21 +1,30 @@
 package board;
 
+import app.App;
 import player.DirectionPoint;
 import player.Player;
 import player.PlayerWithGraphics;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class Board extends JPanel implements ActionListener, KeyListener {
+public abstract class Board extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
+
+    private int x,y;
+    private String str;
 
     public static final int SEED = 42;
     public static final int TILE_SIZE = 25;
+    public static final int TOP_LEFT_X_RESTART_BUTTON = 150;
+    public static final int TOP_RIGHT_X_RESTART_BUTTON = 245;
+    public static final int TOP_LEFT_Y_RESTART_BUTTON = 235;
+    public static final int TOP_RIGHT_Y_RESTART_BUTTON = 255;
+    public static final int TOP_LEFT_X_MENU_BUTTON = 280;
+    public static final int TOP_RIGHT_X_MENU_BUTTON = 440;
+    public static final int TOP_LEFT_Y_MENU_BUTTON = 235;
+    public static final int TOP_RIGHT_Y_MENU_BUTTON = 255;
     public static int ROWS;
     public static int COLUMNS;
     protected Timer timer;
@@ -60,7 +69,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
             default -> throw new IllegalArgumentException("Invalid difficulty setting");
         }
         timer.start();
-
+        str = " ";
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -185,7 +194,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         }
         String yourScoreText = "Current Score:";
         String highScoreText = "Highscore:";
-        String exampleHighScore = "69 Apples";
+        String exampleHighScore = "";
         String difficultyText = "Difficulty:";
         // we need to cast the Graphics to Graphics2D to draw nicer text
         Graphics2D g2d = (Graphics2D) g;
@@ -298,4 +307,73 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     public boolean isEndScreen() {
         return endScreen;
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        x = e.getX();
+        y = e.getY();
+        // str = "x="+x+", y="+y;
+        // restart button
+        if (x >= TOP_LEFT_X_RESTART_BUTTON && x <= TOP_RIGHT_Y_RESTART_BUTTON
+                && y >= TOP_LEFT_Y_RESTART_BUTTON && y <= TOP_RIGHT_Y_RESTART_BUTTON) {
+            App.initGame(App.getGraphics(), App.getDifficulty());
+        }
+        // menu button
+        if (x >= TOP_LEFT_X_MENU_BUTTON && x <= TOP_RIGHT_X_MENU_BUTTON
+                && y >= TOP_LEFT_Y_MENU_BUTTON &&  y <= TOP_RIGHT_Y_MENU_BUTTON) {
+            // TODO
+        }
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        // only relevant on the score screen
+        if (!gameOver) {
+            return;
+        }
+
+        x = e.getX();
+        y = e.getY();
+
+        // restart button
+        if (x >= TOP_LEFT_X_RESTART_BUTTON && x <= TOP_RIGHT_Y_RESTART_BUTTON
+                && y >= TOP_LEFT_Y_RESTART_BUTTON && y <= TOP_RIGHT_Y_RESTART_BUTTON) {
+            restartButtonActive = true;
+            menuButtonActive = false;
+        }
+        // menu button
+        if (x >= TOP_LEFT_X_MENU_BUTTON && x <= TOP_RIGHT_X_MENU_BUTTON
+                && y >= TOP_LEFT_Y_MENU_BUTTON &&  y <= TOP_RIGHT_Y_MENU_BUTTON) {
+            menuButtonActive = true;
+            restartButtonActive = false;
+        }
+
+    }
+
 }
