@@ -1,0 +1,5 @@
+# ignore error message folder
+Fehlermeldungen/
+
+# ignore binary folder
+out/
