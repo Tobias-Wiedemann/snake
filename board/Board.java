@@ -14,17 +14,16 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
 
     private int x,y;
     private String str;
-
     public static final int SEED = 42;
     public static final int TILE_SIZE = 25;
-    public static final int TOP_LEFT_X_RESTART_BUTTON = 150;
-    public static final int TOP_RIGHT_X_RESTART_BUTTON = 245;
-    public static final int TOP_LEFT_Y_RESTART_BUTTON = 235;
-    public static final int TOP_RIGHT_Y_RESTART_BUTTON = 255;
-    public static final int TOP_LEFT_X_MENU_BUTTON = 280;
-    public static final int TOP_RIGHT_X_MENU_BUTTON = 440;
-    public static final int TOP_LEFT_Y_MENU_BUTTON = 235;
-    public static final int TOP_RIGHT_Y_MENU_BUTTON = 255;
+    public static final int LEFT_X_RESTART_BUTTON = 150;
+    public static final int RIGHT_X_RESTART_BUTTON = 245;
+    public static final int TOP_Y_RESTART_BUTTON = 235;
+    public static final int BOTTOM_Y_RESTART_BUTTON = 255;
+    public static final int LEFT_X_MENU_BUTTON = 280;
+    public static final int RIGHT_X_MENU_BUTTON = 440;
+    public static final int TOP_Y_MENU_BUTTON = 235;
+    public static final int BOTTOM_Y_MENU_BUTTON = 255;
     public static int ROWS;
     public static int COLUMNS;
     protected Timer timer;
@@ -39,7 +38,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     protected boolean menuButtonActive;
 
 
-    public Board(final int rows, final int columns, Color color, String difficulty) {
+    public Board(final int rows, final int columns, String difficulty) {
         ROWS = rows;
         COLUMNS = columns;
         SCORE_HEIGHT = 3;
@@ -52,7 +51,6 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         this.difficulty = difficulty;
         setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * (ROWS + SCORE_HEIGHT)));
         // set the game board background color
-        setBackground(color);
 
         // initialize the game state
         player = new PlayerWithGraphics(COLUMNS / 2, ROWS / 2, this);
@@ -107,7 +105,6 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         // this smooths out animations on some systems
         Toolkit.getDefaultToolkit().sync();
     }
-
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -314,14 +311,15 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         y = e.getY();
         // str = "x="+x+", y="+y;
         // restart button
-        if (x >= TOP_LEFT_X_RESTART_BUTTON && x <= TOP_RIGHT_Y_RESTART_BUTTON
-                && y >= TOP_LEFT_Y_RESTART_BUTTON && y <= TOP_RIGHT_Y_RESTART_BUTTON) {
+        if (x >= LEFT_X_RESTART_BUTTON && x <= RIGHT_X_RESTART_BUTTON
+                && y >= TOP_Y_RESTART_BUTTON && y <= BOTTOM_Y_RESTART_BUTTON) {
             App.initGame(App.getGraphics(), App.getDifficulty());
         }
         // menu button
-        if (x >= TOP_LEFT_X_MENU_BUTTON && x <= TOP_RIGHT_X_MENU_BUTTON
-                && y >= TOP_LEFT_Y_MENU_BUTTON &&  y <= TOP_RIGHT_Y_MENU_BUTTON) {
-            // TODO
+        if (x >= LEFT_X_MENU_BUTTON && x <= RIGHT_X_MENU_BUTTON
+                && y >= TOP_Y_MENU_BUTTON &&  y <= BOTTOM_Y_MENU_BUTTON) {
+            App.close();
+            App.initMenu();
         }
 
     }
@@ -362,14 +360,14 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         y = e.getY();
 
         // restart button
-        if (x >= TOP_LEFT_X_RESTART_BUTTON && x <= TOP_RIGHT_Y_RESTART_BUTTON
-                && y >= TOP_LEFT_Y_RESTART_BUTTON && y <= TOP_RIGHT_Y_RESTART_BUTTON) {
+        if (x >= LEFT_X_RESTART_BUTTON && x <= RIGHT_X_RESTART_BUTTON
+                && y >= TOP_Y_RESTART_BUTTON && y <= BOTTOM_Y_RESTART_BUTTON) {
             restartButtonActive = true;
             menuButtonActive = false;
         }
         // menu button
-        if (x >= TOP_LEFT_X_MENU_BUTTON && x <= TOP_RIGHT_X_MENU_BUTTON
-                && y >= TOP_LEFT_Y_MENU_BUTTON &&  y <= TOP_RIGHT_Y_MENU_BUTTON) {
+        if (x >= LEFT_X_MENU_BUTTON && x <= RIGHT_X_MENU_BUTTON
+                && y >= TOP_Y_MENU_BUTTON &&  y <= BOTTOM_Y_MENU_BUTTON) {
             menuButtonActive = true;
             restartButtonActive = false;
         }

@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class SimpleBoard extends Board {
     public SimpleBoard(String difficulty) {
-        super(14, 20, new Color(232, 232, 232), difficulty);
+        super(14, 20, difficulty);
     }
 
 /*
