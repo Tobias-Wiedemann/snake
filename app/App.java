@@ -96,6 +96,10 @@ public class App {
         window.dispose();
     }
 
+    public static void endApp() {
+        close();
+        System.exit(0);
+    }
 
     public static void main(String[] args) {
         // invokeLater() is used here to prevent our graphics processing from

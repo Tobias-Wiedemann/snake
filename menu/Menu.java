@@ -35,46 +35,46 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
     protected Timer timer;
     private static final int RIGHT_X_PLAY = 80;
     private static final int LEFT_X_PLAY = 230;
-    private static final int TOP_Y_PLAY = 180;
-    private static final int BOTTOM_Y_PLAY = 205;
+    private static final int TOP_Y_PLAY = 170;
+    private static final int BOTTOM_Y_PLAY = 215;
     private static final int RIGHT_X_HIGHSCORE = 75;
     private static final int LEFT_X_HIGHSCORE = 240;
-    private static final int TOP_Y_HIGHSCORE = 230;
-    private static final int BOTTOM_Y_HIGHSCORE = 255;
+    private static final int TOP_Y_HIGHSCORE = 220;
+    private static final int BOTTOM_Y_HIGHSCORE = 265;
     private static final int RIGHT_X_AUTOPLAYER = 75;
     private static final int LEFT_X_AUTOPLAYER = 240;
-    private static final int TOP_Y_AUTOPLAYER = 280;
-    private static final int BOTTOM_Y_AUTOPLAYER = 305;
+    private static final int TOP_Y_AUTOPLAYER = 270;
+    private static final int BOTTOM_Y_AUTOPLAYER = 315;
     private static final int RIGHT_X_EXIT = 130;
     private static final int LEFT_X_EXIT = 185;
-    private static final int TOP_Y_EXIT = 330;
-    private static final int BOTTOM_Y_EXIT = 355;
+    private static final int TOP_Y_EXIT = 320;
+    private static final int BOTTOM_Y_EXIT = 365;
     private static final int BIG_FONT = 35;
     private static final int NORMAL_FONT = 25;
     private static final int SMALL_FONT = 20;
     private static final int HEADLINE_FONT = 50;
     private static final int RIGHT_X_EASY = 130;
     private static final int LEFT_X_EASY = 185;
-    private static final int TOP_Y_EASY = 210;
-    private static final int BOTTOM_Y_EASY = 230;
+    private static final int TOP_Y_EASY = 200;
+    private static final int BOTTOM_Y_EASY = 240;
     private static final int RIGHT_X_MEDIUM = 115;
     private static final int LEFT_X_MEDIUM = 200;
-    private static final int TOP_Y_MEDIUM = 250;
-    private static final int BOTTOM_Y_MEDIUM = 270;
+    private static final int TOP_Y_MEDIUM = 245;
+    private static final int BOTTOM_Y_MEDIUM = 280;
     private static final int RIGHT_X_HARD = 125;
     private static final int LEFT_X_HARD = 185;
-    private static final int TOP_Y_HARD = 290;
-    private static final int BOTTOM_Y_HARD = 310;
+    private static final int TOP_Y_HARD = 285;
+    private static final int BOTTOM_Y_HARD = 320;
     private static final int RIGHT_X_EXPERT_LEVEL = 100;
     private static final int LEFT_X_EXPERT_LEVEL = 215;
     private static final int TOP_Y_EXPERT_LEVEL = 325;
-    private static final int BOTTOM_Y_EXPERT_LEVEL = 345;
+    private static final int BOTTOM_Y_EXPERT_LEVEL = 355;
     private static final int RIGHT_X_BACK_FROM_GAMES = 130;
     private static final int LEFT_X_BACK_FROM_GAMES = 185;
     private static final int TOP_Y_BACK_FROM_GAMES = 360;
     private static final int BOTTOM_Y_BACK_FROM_GAMES = 380;
     private static final int TOP_Y_BACK_FROM_GAMES_2 = 325;
-    private static final int BOTTOM_Y_BACK_FROM_GAMES_2 = 345;
+    private static final int BOTTOM_Y_BACK_FROM_GAMES_2 = 355;
     private static final int RIGHT_X_GIGA_HYPA_EXTREME = 70;
     private static final int LEFT_X_GIGA_HYPA_EXTREME = 255;
 
@@ -211,10 +211,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
                     height / 4 + 20 * height / 32);
         }
 
-
-        g2d.drawString("x="+x+","+"y="+y, (width - metrics.stringWidth(back)) / 2,
-                height / 4 + 23 * height / 32);
-
+//        g2d.drawString(str, (width - metrics.stringWidth(str)) / 2, height / 4 + 23 * height / 32);
     }
 
     public void drawHighscores(Graphics g) {
@@ -275,7 +272,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
                 height / 4 + 5 * height / 16);
         // Autoplayer
         if (autoPlayerButton) {
-            g2d.setFont(new Font("Lato", Font.BOLD, SMALL_FONT));
+            g2d.setFont(new Font("Lato", Font.BOLD, BIG_FONT));
         } else {
             g2d.setFont(new Font("Lato", Font.BOLD, NORMAL_FONT));
         }
@@ -306,7 +303,266 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // EndScreen shit
+        int key = e.getKeyCode();
+        switch (currentState) {
 
+
+            case menuState: {
+                // Nothing selected
+                if (!playButton && !autoPlayerButton && !highscoreButton && !exitButton) {
+                    playButton = true;
+                    return;
+                }
+                // Enter selected
+                if (key == KeyEvent.VK_ENTER) {
+                    if (playButton) {
+                        playButton = false;
+                        currentState = state.playGame;
+                        return;
+                    }
+                    if (autoPlayerButton) {
+                        autoPlayerButton = false;
+                        currentState = state.autoplayer;
+                        return;
+                    }
+                    if (highscoreButton) {
+                        highscoreButton = false;
+                        currentState = state.highscore;
+                        return;
+                    }
+                    if (exitButton) {
+                        App.endApp();
+                        return;
+                    }
+                }
+                // Moving up
+                if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
+                    if (playButton) {
+                        playButton = false;
+                        exitButton = true;
+                        return;
+                    }
+                    if (highscoreButton) {
+                        highscoreButton = false;
+                        playButton = true;
+                        return;
+                    }
+                    if (autoPlayerButton) {
+                        autoPlayerButton = false;
+                        highscoreButton = true;
+                        return;
+                    }
+                    if (exitButton) {
+                        exitButton = false;
+                        autoPlayerButton = true;
+                        return;
+                    }
+                }
+                // Moving down
+                if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
+                    if (playButton) {
+                        playButton = false;
+                        highscoreButton = true;
+                        return;
+                    }
+                    if (highscoreButton) {
+                        highscoreButton = false;
+                        autoPlayerButton = true;
+                        return;
+                    }
+                    if (autoPlayerButton) {
+                        autoPlayerButton = false;
+                        exitButton = true;
+                        return;
+                    }
+                    if (exitButton) {
+                        exitButton = false;
+                        playButton = true;
+                        return;
+                    }
+                }
+            }
+
+
+
+            case playGame: {
+                // Nothing selected
+                if (!easyButton && !mediumButton && !hardButton && !expertLevelButton && !backFromGamesButton) {
+                    easyButton = true;
+                    return;
+                }
+                // Enter selected
+                if (key == KeyEvent.VK_ENTER) {
+                    if (easyButton) {
+                        App.initGame(true, "EASY");
+                        return;
+                    }
+                    if (mediumButton) {
+                        App.initGame(true, "MEDIUM");
+                        return;
+                    }
+                    if (hardButton) {
+                        App.initGame(true, "HARD");
+                        return;
+                    }
+                    if (expertLevelButton) {
+                        expertLevelButton = false;
+                        currentState = state.hardDifficultys;
+                        return;
+                    }
+                    if (backFromGamesButton) {
+                        backFromGamesButton = false;
+                        currentState = state.menuState;
+                        return;
+                    }
+                }
+                // Moving up
+                if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
+                    if (easyButton) {
+                        easyButton = false;
+                        backFromGamesButton = true;
+                        return;
+                    }
+                    if (mediumButton) {
+                        mediumButton = false;
+                        easyButton = true;
+                        return;
+                    }
+                    if (hardButton) {
+                        hardButton = false;
+                        mediumButton = true;
+                        return;
+                    }
+                    if (expertLevelButton) {
+                        expertLevelButton = false;
+                        hardButton = true;
+                        return;
+                    }
+                    if (backFromGamesButton) {
+                        backFromGamesButton = false;
+                        expertLevelButton = true;
+                        return;
+                    }
+                }
+                // Moving down
+                if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
+                    if (easyButton) {
+                        easyButton = false;
+                        mediumButton = true;
+                        return;
+                    }
+                    if (mediumButton) {
+                        mediumButton = false;
+                        hardButton = true;
+                        return;
+                    }
+                    if (hardButton) {
+                        hardButton = false;
+                        expertLevelButton = true;
+                        return;
+                    }
+                    if (expertLevelButton) {
+                        expertLevelButton = false;
+                        backFromGamesButton = true;
+                        return;
+                    }
+                    if (backFromGamesButton) {
+                        backFromGamesButton = false;
+                        easyButton = true;
+                        return;
+                    }
+                }
+            }
+
+
+
+            case hardDifficultys: {
+                // Nothing selected
+                if (!extremeButton && !gigaExtremeButton && !hypaExtremeButton && !backFromGamesButton) {
+                    extremeButton = true;
+                    return;
+                }
+                // Enter selected
+                if (key == KeyEvent.VK_ENTER) {
+                    if (extremeButton) {
+                        App.initGame(true, "EXTREME");
+                        return;
+                    }
+                    if (gigaExtremeButton) {
+                        App.initGame(true, "GIGAEXTREME");
+                        return;
+                    }
+                    if (hypaExtremeButton) {
+                        App.initGame(true, "HYPAEXTREME");
+                        return;
+                    }
+                    if (backFromGamesButton) {
+                        backFromGamesButton = false;
+                        currentState = state.playGame;
+                        return;
+                    }
+                }
+                // Moving up
+                if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
+                    if (extremeButton) {
+                        extremeButton = false;
+                        backFromGamesButton = true;
+                        return;
+                    }
+                    if (gigaExtremeButton) {
+                        gigaExtremeButton = false;
+                        extremeButton = true;
+                        return;
+                    }
+                    if (hypaExtremeButton) {
+                        hypaExtremeButton = false;
+                        gigaExtremeButton = true;
+                        return;
+                    }
+                    if (backFromGamesButton) {
+                        backFromGamesButton = false;
+                        hypaExtremeButton = true;
+                        return;
+                    }
+                }
+                // Moving down
+                if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
+                    if (extremeButton) {
+                        extremeButton = false;
+                        gigaExtremeButton = true;
+                        return;
+                    }
+                    if (gigaExtremeButton) {
+                        gigaExtremeButton = false;
+                        hypaExtremeButton = true;
+                        return;
+                    }
+                    if (hypaExtremeButton) {
+                        hypaExtremeButton = false;
+                        backFromGamesButton = true;
+                        return;
+                    }
+                    if (backFromGamesButton) {
+                        backFromGamesButton = false;
+                        extremeButton = true;
+                        return;
+                    }
+                }
+            }
+
+
+
+            case highscore: {
+                currentState = state.menuState;
+            }
+
+
+
+            case autoplayer: {
+                currentState = state.menuState;
+            }
+        }
     }
 
     @Override
@@ -333,7 +589,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
         }
         // EXIT
         if (exitButton) {
-            App.close();
+            App.endApp();
         }
 
         // SELECT GAME 1

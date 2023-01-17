@@ -194,36 +194,6 @@ public class Player {
                 default -> throw new IllegalArgumentException("Snake's neck does not face any direction :(");
             }
         } else {
-            // EndScreen shit
-
-            // If nothing is selected yet
-            if (!board.isMenuButtonActive() && !board.isRestartButtonActive()) {
-                board.setRestartButton(true);
-                return;
-            }
-
-            // Moving selected button
-            if (key == KeyEvent.VK_LEFT
-                    || key == KeyEvent.VK_A || key == KeyEvent.VK_RIGHT
-                    || key == KeyEvent.VK_D) {
-                if (board.isRestartButtonActive()) {
-                    board.setRestartButton(false);
-                    board.setMenuButton(true);
-                } else {
-                    board.setRestartButton(true);
-                    board.setMenuButton(false);
-                }
-
-            }
-
-            if (board.isRestartButtonActive() && key == KeyEvent.VK_ENTER) {
-                App.initGame(App.getGraphics(), App.getDifficulty());
-            }
-
-            if (board.isMenuButtonActive() && key == KeyEvent.VK_ENTER) {
-                // TODO menu
-
-            }
         }
     }
 

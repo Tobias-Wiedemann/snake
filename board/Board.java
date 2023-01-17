@@ -114,7 +114,42 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     @Override
     public void keyPressed(KeyEvent e) {
         // react to key down events
-        player.keyPressed(e);
+        if (!gameOver) {
+            // Player is only involved when game is running
+            player.keyPressed(e);
+        } else {
+            // EndScreen shit
+            int key = e.getKeyCode();
+
+            // If nothing is selected yet
+            if (!isMenuButtonActive() && !isRestartButtonActive()) {
+                setRestartButton(true);
+                return;
+            }
+
+            // Moving selected button
+            if (key == KeyEvent.VK_LEFT
+                    || key == KeyEvent.VK_A || key == KeyEvent.VK_RIGHT
+                    || key == KeyEvent.VK_D) {
+                if (isRestartButtonActive()) {
+                    setRestartButton(false);
+                    setMenuButton(true);
+                } else {
+                    setRestartButton(true);
+                    setMenuButton(false);
+                }
+
+            }
+
+            if (isRestartButtonActive() && key == KeyEvent.VK_ENTER) {
+                App.initGame(App.getGraphics(), App.getDifficulty());
+            }
+
+            if (isMenuButtonActive() && key == KeyEvent.VK_ENTER) {
+                App.close();
+                App.initMenu();
+            }
+        }
     }
 
     @Override
