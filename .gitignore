@@ -3,3 +3,5 @@ Fehlermeldungen/
 
 # ignore binary folder
 out/
+
+highscores.txt

@@ -8,7 +8,6 @@ import javax.swing.*;
 
 public class App {
 
-    private static boolean appGoing;
     private static JFrame window;
     private static boolean graphics;
     private static String difficulty;
@@ -29,23 +28,9 @@ public class App {
         return difficulty;
     }
 
-    private static void setAppGoing(boolean state) {
-        appGoing = state;
-    }
-
-    public static boolean getAppGoing() {
-        return appGoing;
-    }
-
-    public static void endApp() {
-        appGoing = false;
-    }
-
-    public static void removeBoard(Board b) {
-        window.remove(b);
-    }
-
     public static void initGame(boolean graphics, String difficulty) {
+        setDifficulty(difficulty);
+
         // Close the window if it is a restart
         if (window != null) {
             window.dispose();
@@ -82,9 +67,9 @@ public class App {
         window.setVisible(true);
     }
 
-    private static void initMenu() {
+    public static void initMenu() {
         // create a window frame and set the title in the toolbar
-        window = new JFrame("Snake");
+        window = new JFrame("Snake - Menu");
         // when we close the window, stop the app
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -95,6 +80,8 @@ public class App {
         window.add(menu);
         // pass keyboard inputs to the jpanel
         window.addKeyListener(menu);
+        window.addMouseListener(menu);
+        window.addMouseMotionListener(menu);
 
         // don't allow the user to resize the window
         window.setResizable(false);
@@ -107,18 +94,25 @@ public class App {
         window.setVisible(true);
     }
 
+    public static void close() {
+        window.dispose();
+    }
+
+    public static void endApp() {
+        close();
+        System.exit(0);
+    }
 
     public static void main(String[] args) {
         // invokeLater() is used here to prevent our graphics processing from
         // blocking the GUI. https://stackoverflow.com/a/22534931/4655368
         // this is a lot of boilerplate code that you shouldn't be too concerned about.
         // just know that when main runs it will call initWindow() once.
-        setAppGoing(true);
         setGraphics(true);
-        setDifficulty("HYPAEXTREME");
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                initGame(graphics, difficulty);
+                //initGame(graphics, difficulty);
+                initMenu();
             }
         });
 

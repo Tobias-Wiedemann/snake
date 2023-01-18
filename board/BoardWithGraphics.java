@@ -11,7 +11,7 @@ public class BoardWithGraphics extends Board {
 
     private BufferedImage image;
     public BoardWithGraphics(String difficulty) {
-        super(14, 20, new Color(232, 232, 232), difficulty);
+        super(14, 20, difficulty);
         loadImage();
     }
 
