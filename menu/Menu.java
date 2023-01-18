@@ -1,14 +1,9 @@
 package menu;
 
 import app.App;
-import board.Difficulty;
-import player.PlayerWithGraphics;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class Menu extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 

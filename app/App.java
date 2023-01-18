@@ -29,6 +29,8 @@ public class App {
     }
 
     public static void initGame(boolean graphics, String difficulty) {
+        setDifficulty(difficulty);
+
         // Close the window if it is a restart
         if (window != null) {
             window.dispose();
@@ -107,7 +109,6 @@ public class App {
         // this is a lot of boilerplate code that you shouldn't be too concerned about.
         // just know that when main runs it will call initWindow() once.
         setGraphics(true);
-        setDifficulty("HYPAEXTREME");
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 //initGame(graphics, difficulty);

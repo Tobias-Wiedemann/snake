@@ -7,6 +7,7 @@ import player.PlayerWithGraphics;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -14,6 +15,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
 
     private int x,y;
     private String str;
+    private final String highscoreFileName = "highscores.txt";
     public static final int SEED = 42;
     public static final int TILE_SIZE = 25;
     public static final int LEFT_X_RESTART_BUTTON = 150;
@@ -36,6 +38,13 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     protected boolean endScreen;
     protected boolean restartButtonActive;
     protected boolean menuButtonActive;
+    private int easyScore;
+    private int mediumScore;
+    private int hardScore;
+    private int extremeScore;
+    private int hypaextremeScore;
+    private int gigaextremeScore;
+
 
 
     public Board(final int rows, final int columns, String difficulty) {
@@ -68,6 +77,13 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         }
         timer.start();
         str = " ";
+        easyScore = 0;
+        mediumScore = 0;
+        hardScore = 0;
+        extremeScore = 0;
+        hypaextremeScore = 0;
+        gigaextremeScore = 0;
+        updateHighscores();
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -226,7 +242,17 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         }
         String yourScoreText = "Current Score:";
         String highScoreText = "Highscore:";
-        String exampleHighScore = "";
+        String exampleHighScore;
+        switch (difficulty) {
+            case "EASY" -> exampleHighScore = Integer.toString(easyScore);
+            case "MEDIUM" -> exampleHighScore = Integer.toString(mediumScore);
+            case "HARD" -> exampleHighScore = Integer.toString(hardScore);
+            case "EXTREME" -> exampleHighScore = Integer.toString(extremeScore);
+            case "HYPAEXTREME" -> exampleHighScore = Integer.toString(hypaextremeScore);
+            case "GIGAEXTREME" -> exampleHighScore = Integer.toString(gigaextremeScore);
+            default -> throw new IllegalArgumentException("Invalid difficulty");
+        }
+        exampleHighScore = exampleHighScore + " Apples";
         String difficultyText = "Difficulty:";
         // we need to cast the Graphics to Graphics2D to draw nicer text
         Graphics2D g2d = (Graphics2D) g;
@@ -300,6 +326,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     public void endGame() {
         gameOver = true;
         endScreen = true;
+        updateHighscores();
     }
 
     public boolean isGameOver() {
@@ -406,7 +433,185 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
             menuButtonActive = true;
             restartButtonActive = false;
         }
+    }
 
+    public void updateHighscores() {
+
+        File f = new File(highscoreFileName);
+
+        if (f.exists()) {
+            if (!readHighscoreFile(f)) {
+                System.out.println("Can not read highscores :/");
+            }
+        }
+
+        saveCurrentScore();
+
+        recreateHighscoreFile(f);
+
+    }
+
+    public void createHighscoreFile(File f) {
+        // Creating a highscore file
+        try {
+            FileWriter fw = new FileWriter(f);
+            fw.write("EASY: " + Math.max(0, easyScore) + "\n");
+            fw.write("MEDIUM: " + Math.max(0, mediumScore) + "\n");
+            fw.write("HARD: " + Math.max(0, hardScore) + "\n");
+            fw.write("EXTREME: " + Math.max(0, extremeScore) + "\n");
+            fw.write("GIGAEXTREME: " + Math.max(0, gigaextremeScore) + "\n");
+            fw.write("HYPAEXTREME: " + Math.max(0, hypaextremeScore) + "\n");
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Highscores not successfully created :(");
+        }
+    }
+
+    public void recreateHighscoreFile(File f) {
+        if (f.delete()) {
+            System.out.println("Deleted the file: " + f.getName());
+        } else {
+            System.out.println("Failed to delete the file.");
+        }
+        createHighscoreFile(f);
+    }
+
+    public boolean readHighscoreFile(File f) {
+
+        // Returns whether a file is correct
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(f.getName()));
+            // EASY
+            String line = br.readLine();
+            if (line == null) {
+                System.out.println("File Reading Mistake");
+                recreateHighscoreFile(f);
+                return false;
+            } else {
+                if (line.length() < 7) {
+                    System.out.println("File Reading Mistake");
+                    recreateHighscoreFile(f);
+                    return false;
+                }
+            }
+            if (!line.substring(0, 6).equals("EASY: ")) {
+                System.out.println("Easy Highscore invalid in file");
+                return false;
+            }
+            easyScore = Integer.parseInt(line.substring(6));
+            // MEDIUM
+            line = br.readLine();
+            if (line == null) {
+                System.out.println("File Reading Mistake");
+                recreateHighscoreFile(f);
+                return false;
+            } else {
+                if (line.length() < 9) {
+                    System.out.println("File Reading Mistake");
+                    recreateHighscoreFile(f);
+                    return false;
+                }
+            }
+            if (!line.substring(0, 8).equals("MEDIUM: ")) {
+                System.out.println("Medium Highscore invalid in file");
+                return false;
+            }
+            mediumScore = Integer.parseInt(line.substring(8));
+            // HARD
+            line = br.readLine();
+            if (line == null) {
+                System.out.println("File Reading Mistake");
+                recreateHighscoreFile(f);
+                return false;
+            } else {
+                if (line.length() < 7) {
+                    System.out.println("File Reading Mistake");
+                    recreateHighscoreFile(f);
+                    return false;
+                }
+            }
+            if (!line.substring(0, 6).equals("HARD: ")) {
+                System.out.println("Hard Highscore invalid in file");
+                return false;
+            }
+            hardScore = Integer.parseInt(line.substring(6));
+            // EXTREME
+            line = br.readLine();
+            if (line == null) {
+                System.out.println("File Reading Mistake");
+                recreateHighscoreFile(f);
+                return false;
+            } else {
+                if (line.length() < 10) {
+                    System.out.println("File Reading Mistake");
+                    recreateHighscoreFile(f);
+                    return false;
+                }
+            }
+            if (!line.substring(0, 9).equals("EXTREME: ")) {
+                System.out.println("Extreme Highscore invalid in file");
+                return false;
+            }
+            extremeScore = Integer.parseInt(line.substring(9));
+            // GIGAEXTREME
+            line = br.readLine();
+            if (line == null) {
+                System.out.println("File Reading Mistake");
+                recreateHighscoreFile(f);
+                return false;
+            } else {
+                if (line.length() < 14) {
+                    System.out.println("File Reading Mistake");
+                    recreateHighscoreFile(f);
+                    return false;
+                }
+            }
+            if (!line.substring(0, 13).equals("GIGAEXTREME: ")) {
+                System.out.println("Gigaextreme Highscore invalid in file");
+                return false;
+            }
+            gigaextremeScore = Integer.parseInt(line.substring(13));
+            // HYPAEXTREME
+            line = br.readLine();
+            if (line == null) {
+                System.out.println("File Reading Mistake");
+                recreateHighscoreFile(f);
+                return false;
+            } else {
+                if (line.length() < 14) {
+                    System.out.println("File Reading Mistake");
+                    recreateHighscoreFile(f);
+                    return false;
+                }
+            }
+            if (!line.substring(0, 13).equals("HYPAEXTREME: ")) {
+                System.out.println("Hypaextreme Highscore invalid in file");
+                return false;
+            }
+            hypaextremeScore = Integer.parseInt(line.substring(13));
+
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            System.out.println("Highscores not successfully updated :(");
+        }
+
+        return true;
+    }
+
+    private void saveCurrentScore() {
+        // Comparing current score to highscore
+        switch (difficulty) {
+            case "EASY" -> easyScore = Math.max(Integer.parseInt(player.getScore()), easyScore);
+            case "MEDIUM" -> mediumScore = Math.max(Integer.parseInt(player.getScore()), mediumScore);
+            case "HARD" -> hardScore = Math.max(Integer.parseInt(player.getScore()), hardScore);
+            case "EXTREME" -> extremeScore = Math.max(Integer.parseInt(player.getScore()), extremeScore);
+            case "HYPAEXTREME" -> hypaextremeScore = Math.max(Integer.parseInt(player.getScore()), hypaextremeScore);
+            case "GIGAEXTREME" -> gigaextremeScore = Math.max(Integer.parseInt(player.getScore()), gigaextremeScore);
+            default -> throw new IllegalArgumentException("Invalid difficulty");
+        }
     }
 
 }
