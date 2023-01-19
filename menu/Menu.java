@@ -219,8 +219,8 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
         String medium = "Medium";
         String hard = "Hard";
         String extreme = "Extreme";
-        String hypaextreme = "Hypaextreme";
         String gigaextreme = "Gigaextreme";
+        String hypaextreme = "Hypaextreme";
         String back = "Back";
         // we need to cast the Graphics to Graphics2D to draw nicer text
         Graphics2D g2d = (Graphics2D) g;
@@ -316,10 +316,10 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
         }
         g2d.drawString(tempScore, 275 - metrics.stringWidth(tempScore),
                 height / 4 + 15 * height / 32);
-        // hypaextreme
-        g2d.drawString(hypaextreme, 35,
+        // gigaextreme
+        g2d.drawString(gigaextreme, 35,
                 height / 4 + 17 * height / 32);
-        tempScore = Integer.toString(App.hypaextremeScore);
+        tempScore = Integer.toString(App.gigaextremeScore);
         if (tempScore.length() == 1) {
             tempScore = "  " + tempScore;
         } else if (tempScore.length() == 2) {
@@ -327,10 +327,10 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
         }
         g2d.drawString(tempScore, 275 - metrics.stringWidth(tempScore),
                 height / 4 + 17 * height / 32);
-        // gigaextreme
-        g2d.drawString(gigaextreme, 35,
+        // hypaextreme
+        g2d.drawString(hypaextreme, 35,
                 height / 4 + 19 * height / 32);
-        tempScore = Integer.toString(App.gigaextremeScore);
+        tempScore = Integer.toString(App.hypaextremeScore);
         if (tempScore.length() == 1) {
             tempScore = "  " + tempScore;
         } else if (tempScore.length() == 2) {

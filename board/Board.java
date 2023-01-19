@@ -75,8 +75,8 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         App.mediumScore = 0;
         App.hardScore = 0;
         App.extremeScore = 0;
-        App.hypaextremeScore = 0;
         App.gigaextremeScore = 0;
+        App.hypaextremeScore = 0;
         updateHighscores();
     }
 
@@ -242,8 +242,8 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
             case "MEDIUM" -> exampleHighScore = Integer.toString(App.mediumScore);
             case "HARD" -> exampleHighScore = Integer.toString(App.hardScore);
             case "EXTREME" -> exampleHighScore = Integer.toString(App.extremeScore);
-            case "HYPAEXTREME" -> exampleHighScore = Integer.toString(App.hypaextremeScore);
             case "GIGAEXTREME" -> exampleHighScore = Integer.toString(App.gigaextremeScore);
+            case "HYPAEXTREME" -> exampleHighScore = Integer.toString(App.hypaextremeScore);
             default -> throw new IllegalArgumentException("Invalid difficulty");
         }
         exampleHighScore = exampleHighScore + " Apples";
