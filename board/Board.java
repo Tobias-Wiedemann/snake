@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 public abstract class Board extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
@@ -16,7 +17,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     private int x,y;
     private String str;
     public final static String highscoreFileName = "highscores.txt";
-    public static final int SEED = 42;
+    public static int SEED = 42;
     public static final int TILE_SIZE = 25;
     public static final int LEFT_X_RESTART_BUTTON = 150;
     public static final int RIGHT_X_RESTART_BUTTON = 245;
@@ -50,6 +51,8 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         restartButtonActive = false;
         menuButtonActive = false;
         apples = new ArrayList<Point>();
+        Date d = new Date();
+        SEED = (int) d.getTime() % 1000;
         random = new Random(SEED);
         this.difficulty = difficulty;
         setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * (ROWS + SCORE_HEIGHT)));
