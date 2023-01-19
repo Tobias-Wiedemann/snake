@@ -4,6 +4,9 @@ import app.App;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+
+import static board.Board.*;
 
 public class Menu extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
@@ -210,11 +213,158 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
     }
 
     public void drawHighscores(Graphics g) {
+        String snakeString = "SNAKE";
+        String highscoreString = "Highscores";
+        String easy = "Easy";
+        String medium = "Medium";
+        String hard = "Hard";
+        String extreme = "Extreme";
+        String gigaextreme = "Gigaextreme";
+        String hypaextreme = "Hypaextreme";
+        String back = "Back";
+        // we need to cast the Graphics to Graphics2D to draw nicer text
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        // set the text color and font
+        g2d.setColor(new Color(119, 178, 120));
 
+        File f = new File(highscoreFileName);
+
+        if (f.exists()) {
+            if (!readHighscoreFile(f)) {
+                System.out.println("Can not read highscores :/");
+                recreateHighscoreFile(f);
+                g2d.setFont(new Font("Lato", Font.BOLD, HEADLINE_FONT));
+                FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+                // SNAKE
+                g2d.drawString(snakeString, (width - metrics.stringWidth(snakeString)) / 2, height / 4);
+                g2d.setFont(new Font("Lato", Font.BOLD, NORMAL_FONT));
+                metrics = g2d.getFontMetrics(g2d.getFont());
+                // Error 404
+                g2d.drawString("Error 404", (width - metrics.stringWidth("Error 404")) / 2, height / 4 + 3 * height / 16);
+                g2d.drawString("Can not read file", (width - metrics.stringWidth("Can not read file")) / 2, height / 4 + 5 * height / 16);
+                return;
+            }
+        } else {
+            createHighscoreFile(f);
+            readHighscoreFile(f);
+        }
+
+
+        g2d.setFont(new Font("Lato", Font.BOLD, HEADLINE_FONT));
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        // SNAKE
+        g2d.drawString(snakeString, (width - metrics.stringWidth(snakeString)) / 2, height / 4);
+
+        // Highscores
+        g2d.setFont(new Font("Lato", Font.BOLD, BIG_FONT));
+        metrics = g2d.getFontMetrics(g2d.getFont());
+        g2d.drawString(highscoreString, (width - metrics.stringWidth(highscoreString)) / 2,
+                height / 4 + 3 * height / 16);
+
+        String tempScore;
+        // Easy
+        g2d.setFont(new Font("Lato", Font.BOLD, NORMAL_FONT));
+        g2d.drawString(easy, 35,
+                height / 4 + 9 * height / 32);
+        tempScore = Integer.toString(App.easyScore);
+        if (tempScore.length() == 1) {
+            tempScore = "  " + tempScore;
+        } else if (tempScore.length() == 2) {
+            tempScore = " " + tempScore;
+        }
+        g2d.drawString(tempScore, 275 - metrics.stringWidth(tempScore),
+                height / 4 + 9 * height / 32);
+        // Medium
+        g2d.drawString(medium, 35,
+                height / 4 + 11 * height / 32);
+        tempScore = Integer.toString(App.mediumScore);
+        if (tempScore.length() == 1) {
+            tempScore = "  " + tempScore;
+        } else if (tempScore.length() == 2) {
+            tempScore = " " + tempScore;
+        }
+        g2d.drawString(tempScore, 275 - metrics.stringWidth(tempScore),
+                height / 4 + 11 * height / 32);
+        // hard
+        g2d.drawString(hard, 35,
+                height / 4 + 13 * height / 32);
+        tempScore = Integer.toString(App.hardScore);
+        if (tempScore.length() == 1) {
+            tempScore = "  " + tempScore;
+        } else if (tempScore.length() == 2) {
+            tempScore = " " + tempScore;
+        }
+        g2d.drawString(tempScore, 275 - metrics.stringWidth(tempScore),
+                height / 4 + 13 * height / 32);
+        // extreme
+        g2d.drawString(extreme, 35,
+                height / 4 + 15 * height / 32);
+        tempScore = Integer.toString(App.extremeScore);
+        if (tempScore.length() == 1) {
+            tempScore = "  " + tempScore;
+        } else if (tempScore.length() == 2) {
+            tempScore = " " + tempScore;
+        }
+        g2d.drawString(tempScore, 275 - metrics.stringWidth(tempScore),
+                height / 4 + 15 * height / 32);
+        // gigaextreme
+        g2d.drawString(gigaextreme, 35,
+                height / 4 + 17 * height / 32);
+        tempScore = Integer.toString(App.gigaextremeScore);
+        if (tempScore.length() == 1) {
+            tempScore = "  " + tempScore;
+        } else if (tempScore.length() == 2) {
+            tempScore = " " + tempScore;
+        }
+        g2d.drawString(tempScore, 275 - metrics.stringWidth(tempScore),
+                height / 4 + 17 * height / 32);
+        // hypaextreme
+        g2d.drawString(hypaextreme, 35,
+                height / 4 + 19 * height / 32);
+        tempScore = Integer.toString(App.hypaextremeScore);
+        if (tempScore.length() == 1) {
+            tempScore = "  " + tempScore;
+        } else if (tempScore.length() == 2) {
+            tempScore = " " + tempScore;
+        }
+        g2d.drawString(tempScore, 275 - metrics.stringWidth(tempScore),
+                height / 4 + 19 * height / 32);
     }
 
     public void drawAutoplayer(Graphics g) {
-
+        String snakeString = "SNAKE";
+        String comingSoonString = "Coming soon";
+        String autoPlayerString = "Autoplayer";
+        // we need to cast the Graphics to Graphics2D to draw nicer text
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        // set the text color and font
+        g2d.setColor(new Color(119, 178, 120));
+        g2d.setFont(new Font("Lato", Font.BOLD, HEADLINE_FONT));
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        // SNAKE
+        g2d.drawString(snakeString, (width - metrics.stringWidth(snakeString)) / 2, height / 4);
+        g2d.drawString(autoPlayerString, (width - metrics.stringWidth(autoPlayerString)) / 2, 3 * height / 8);
+        g2d.setFont(new Font("Lato", Font.BOLD, BIG_FONT));
+        metrics = g2d.getFontMetrics(g2d.getFont());
+        g2d.drawString(comingSoonString, (width - metrics.stringWidth(comingSoonString)) / 2, 2 * height / 3);
     }
 
     public void drawBackground(Graphics g) {
@@ -577,10 +727,12 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
         // HIGHSCORE
         if (highscoreButton) {
             currentState = state.highscore;
+            return;
         }
         // AUTOPLAYER
         if (autoPlayerButton) {
             currentState = state.autoplayer;
+            return;
         }
         // EXIT
         if (exitButton) {
@@ -629,6 +781,18 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
         }
 
 
+
+        // HIGHSCORES
+        if (currentState == state.highscore) {
+            currentState = state.menuState;
+        }
+
+
+
+        // AUTOPLAYER
+        if (currentState == state.autoplayer) {
+            currentState = state.menuState;
+        }
     }
 
     @Override
@@ -722,6 +886,12 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
             // BACK_FROM_GAMES button
             if (x <= LEFT_X_BACK_FROM_GAMES && x >= RIGHT_X_BACK_FROM_GAMES && y >= TOP_Y_BACK_FROM_GAMES_2 && y <= BOTTOM_Y_BACK_FROM_GAMES_2) {
                 backFromGamesButton = true;
+            }
+        }
+
+        if (currentState == state.highscore) {
+            if (x <= 175 && x >= 115 && y >= TOP_Y_EASY && y <= BOTTOM_Y_EASY) {
+                extremeButton = true;
             }
         }
     }

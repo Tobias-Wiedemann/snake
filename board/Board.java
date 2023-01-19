@@ -15,7 +15,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
 
     private int x,y;
     private String str;
-    private final String highscoreFileName = "highscores.txt";
+    public final static String highscoreFileName = "highscores.txt";
     public static final int SEED = 42;
     public static final int TILE_SIZE = 25;
     public static final int LEFT_X_RESTART_BUTTON = 150;
@@ -38,12 +38,6 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     protected boolean endScreen;
     protected boolean restartButtonActive;
     protected boolean menuButtonActive;
-    private int easyScore;
-    private int mediumScore;
-    private int hardScore;
-    private int extremeScore;
-    private int hypaextremeScore;
-    private int gigaextremeScore;
 
 
 
@@ -77,12 +71,12 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         }
         timer.start();
         str = " ";
-        easyScore = 0;
-        mediumScore = 0;
-        hardScore = 0;
-        extremeScore = 0;
-        hypaextremeScore = 0;
-        gigaextremeScore = 0;
+        App.easyScore = 0;
+        App.mediumScore = 0;
+        App.hardScore = 0;
+        App.extremeScore = 0;
+        App.gigaextremeScore = 0;
+        App.hypaextremeScore = 0;
         updateHighscores();
     }
 
@@ -244,12 +238,12 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         String highScoreText = "Highscore:";
         String exampleHighScore;
         switch (difficulty) {
-            case "EASY" -> exampleHighScore = Integer.toString(easyScore);
-            case "MEDIUM" -> exampleHighScore = Integer.toString(mediumScore);
-            case "HARD" -> exampleHighScore = Integer.toString(hardScore);
-            case "EXTREME" -> exampleHighScore = Integer.toString(extremeScore);
-            case "HYPAEXTREME" -> exampleHighScore = Integer.toString(hypaextremeScore);
-            case "GIGAEXTREME" -> exampleHighScore = Integer.toString(gigaextremeScore);
+            case "EASY" -> exampleHighScore = Integer.toString(App.easyScore);
+            case "MEDIUM" -> exampleHighScore = Integer.toString(App.mediumScore);
+            case "HARD" -> exampleHighScore = Integer.toString(App.hardScore);
+            case "EXTREME" -> exampleHighScore = Integer.toString(App.extremeScore);
+            case "GIGAEXTREME" -> exampleHighScore = Integer.toString(App.gigaextremeScore);
+            case "HYPAEXTREME" -> exampleHighScore = Integer.toString(App.hypaextremeScore);
             default -> throw new IllegalArgumentException("Invalid difficulty");
         }
         exampleHighScore = exampleHighScore + " Apples";
@@ -451,23 +445,23 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
 
     }
 
-    public void createHighscoreFile(File f) {
+    public static void createHighscoreFile(File f) {
         // Creating a highscore file
         try {
             FileWriter fw = new FileWriter(f);
-            fw.write("EASY: " + Math.max(0, easyScore) + "\n");
-            fw.write("MEDIUM: " + Math.max(0, mediumScore) + "\n");
-            fw.write("HARD: " + Math.max(0, hardScore) + "\n");
-            fw.write("EXTREME: " + Math.max(0, extremeScore) + "\n");
-            fw.write("GIGAEXTREME: " + Math.max(0, gigaextremeScore) + "\n");
-            fw.write("HYPAEXTREME: " + Math.max(0, hypaextremeScore) + "\n");
+            fw.write("EASY: " + Math.max(0, App.easyScore) + "\n");
+            fw.write("MEDIUM: " + Math.max(0, App.mediumScore) + "\n");
+            fw.write("HARD: " + Math.max(0, App.hardScore) + "\n");
+            fw.write("EXTREME: " + Math.max(0, App.extremeScore) + "\n");
+            fw.write("GIGAEXTREME: " + Math.max(0, App.gigaextremeScore) + "\n");
+            fw.write("HYPAEXTREME: " + Math.max(0, App.hypaextremeScore) + "\n");
             fw.close();
         } catch (IOException e) {
             System.out.println("Highscores not successfully created :(");
         }
     }
 
-    public void recreateHighscoreFile(File f) {
+    public static void recreateHighscoreFile(File f) {
         if (f.delete()) {
             System.out.println("Deleted the file: " + f.getName());
         } else {
@@ -476,7 +470,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
         createHighscoreFile(f);
     }
 
-    public boolean readHighscoreFile(File f) {
+    public static boolean readHighscoreFile(File f) {
 
         // Returns whether a file is correct
 
@@ -499,7 +493,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
                 System.out.println("Easy Highscore invalid in file");
                 return false;
             }
-            easyScore = Integer.parseInt(line.substring(6));
+            App.easyScore = Integer.parseInt(line.substring(6));
             // MEDIUM
             line = br.readLine();
             if (line == null) {
@@ -517,7 +511,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
                 System.out.println("Medium Highscore invalid in file");
                 return false;
             }
-            mediumScore = Integer.parseInt(line.substring(8));
+            App.mediumScore = Integer.parseInt(line.substring(8));
             // HARD
             line = br.readLine();
             if (line == null) {
@@ -535,7 +529,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
                 System.out.println("Hard Highscore invalid in file");
                 return false;
             }
-            hardScore = Integer.parseInt(line.substring(6));
+            App.hardScore = Integer.parseInt(line.substring(6));
             // EXTREME
             line = br.readLine();
             if (line == null) {
@@ -553,7 +547,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
                 System.out.println("Extreme Highscore invalid in file");
                 return false;
             }
-            extremeScore = Integer.parseInt(line.substring(9));
+            App.extremeScore = Integer.parseInt(line.substring(9));
             // GIGAEXTREME
             line = br.readLine();
             if (line == null) {
@@ -571,7 +565,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
                 System.out.println("Gigaextreme Highscore invalid in file");
                 return false;
             }
-            gigaextremeScore = Integer.parseInt(line.substring(13));
+            App.gigaextremeScore = Integer.parseInt(line.substring(13));
             // HYPAEXTREME
             line = br.readLine();
             if (line == null) {
@@ -589,7 +583,7 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
                 System.out.println("Hypaextreme Highscore invalid in file");
                 return false;
             }
-            hypaextremeScore = Integer.parseInt(line.substring(13));
+            App.hypaextremeScore = Integer.parseInt(line.substring(13));
 
 
         } catch (FileNotFoundException e) {
@@ -604,12 +598,12 @@ public abstract class Board extends JPanel implements ActionListener, KeyListene
     private void saveCurrentScore() {
         // Comparing current score to highscore
         switch (difficulty) {
-            case "EASY" -> easyScore = Math.max(Integer.parseInt(player.getScore()), easyScore);
-            case "MEDIUM" -> mediumScore = Math.max(Integer.parseInt(player.getScore()), mediumScore);
-            case "HARD" -> hardScore = Math.max(Integer.parseInt(player.getScore()), hardScore);
-            case "EXTREME" -> extremeScore = Math.max(Integer.parseInt(player.getScore()), extremeScore);
-            case "HYPAEXTREME" -> hypaextremeScore = Math.max(Integer.parseInt(player.getScore()), hypaextremeScore);
-            case "GIGAEXTREME" -> gigaextremeScore = Math.max(Integer.parseInt(player.getScore()), gigaextremeScore);
+            case "EASY" -> App.easyScore = Math.max(Integer.parseInt(player.getScore()), App.easyScore);
+            case "MEDIUM" -> App.mediumScore = Math.max(Integer.parseInt(player.getScore()), App.mediumScore);
+            case "HARD" -> App.hardScore = Math.max(Integer.parseInt(player.getScore()), App.hardScore);
+            case "EXTREME" -> App.extremeScore = Math.max(Integer.parseInt(player.getScore()), App.extremeScore);
+            case "HYPAEXTREME" -> App.hypaextremeScore = Math.max(Integer.parseInt(player.getScore()), App.hypaextremeScore);
+            case "GIGAEXTREME" -> App.gigaextremeScore = Math.max(Integer.parseInt(player.getScore()), App.gigaextremeScore);
             default -> throw new IllegalArgumentException("Invalid difficulty");
         }
     }
