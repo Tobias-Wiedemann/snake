@@ -341,7 +341,30 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
     }
 
     public void drawAutoplayer(Graphics g) {
-
+        String snakeString = "SNAKE";
+        String comingSoonString = "Coming soon";
+        String autoPlayerString = "Autoplayer";
+        // we need to cast the Graphics to Graphics2D to draw nicer text
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        // set the text color and font
+        g2d.setColor(new Color(119, 178, 120));
+        g2d.setFont(new Font("Lato", Font.BOLD, HEADLINE_FONT));
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        // SNAKE
+        g2d.drawString(snakeString, (width - metrics.stringWidth(snakeString)) / 2, height / 4);
+        g2d.drawString(autoPlayerString, (width - metrics.stringWidth(autoPlayerString)) / 2, 3 * height / 8);
+        g2d.setFont(new Font("Lato", Font.BOLD, BIG_FONT));
+        metrics = g2d.getFontMetrics(g2d.getFont());
+        g2d.drawString(comingSoonString, (width - metrics.stringWidth(comingSoonString)) / 2, 2 * height / 3);
     }
 
     public void drawBackground(Graphics g) {
@@ -709,6 +732,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
         // AUTOPLAYER
         if (autoPlayerButton) {
             currentState = state.autoplayer;
+            return;
         }
         // EXIT
         if (exitButton) {
@@ -760,6 +784,13 @@ public class Menu extends JPanel implements ActionListener, KeyListener, MouseLi
 
         // HIGHSCORES
         if (currentState == state.highscore) {
+            currentState = state.menuState;
+        }
+
+
+
+        // AUTOPLAYER
+        if (currentState == state.autoplayer) {
             currentState = state.menuState;
         }
     }
