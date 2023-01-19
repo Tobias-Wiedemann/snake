@@ -11,6 +11,13 @@ public class App {
     private static JFrame window;
     private static boolean graphics;
     private static String difficulty;
+    public static int easyScore;
+    public static int mediumScore;
+    public static int hardScore;
+    public static int extremeScore;
+    public static int hypaextremeScore;
+    public static int gigaextremeScore;
+
 
     public static void setGraphics(boolean b) {
         graphics = b;
